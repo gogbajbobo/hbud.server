@@ -10,9 +10,11 @@
   "author": "Maxim Grigoriev <grigoriev.maxim@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "express": "^4.16.3",
     "nconf": "^0.10.0"
   },
   "devDependencies": {
+    "@types/express": "^4.11.1",
     "@types/nconf": "0.0.37",
     "@types/node": "^10.1.2"
   }
