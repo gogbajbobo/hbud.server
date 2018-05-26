@@ -9,6 +9,7 @@ const routes_1 = __importDefault(require("./routes/routes"));
 const app = express();
 app.use(routes_1.default);
 const port = process.env.PORT || config_1.default.get(`network:${process.env.appname}:port`) || 80;
-app.listen(port, () => {
-    console.log(`AUTH server start on port:${port}`);
+const server = app.listen(port, () => {
+    const { address, port, family } = server.address();
+    console.log(`AUTH server listening at http://${address}:${port} ${family}`);
 });
