@@ -9,4 +9,6 @@ const register_1 = __importDefault(require("./register"));
 const router = express_1.Router();
 root_1.default(router);
 register_1.default(router);
+router.route('*')
+    .all((req, res) => res.status(404).end());
 exports.default = router;
