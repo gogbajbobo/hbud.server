@@ -4,6 +4,7 @@ import router from './routes/routes'
 import {AddressInfo} from "net";
 
 const app = express();
+
 app.use(router);
 
 const port = process.env.PORT || config.get(`network:${ process.env.appname }:port`) || 80;
