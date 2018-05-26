@@ -7,4 +7,4 @@ const router = Router();
 rootRoute(router);
 registerRoute(router);
 
-export default router;
+export default router
