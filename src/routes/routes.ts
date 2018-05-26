@@ -1,8 +1,10 @@
 import { Router } from 'express';
+import rootRoute from './root'
+import registerRoute from './register'
 
 const router = Router();
 
-router.route('/')
-    .get((req, res) => res.status(200).json({ api: 'hbud.api' }));
+rootRoute(router);
+registerRoute(router);
 
 export default router;
