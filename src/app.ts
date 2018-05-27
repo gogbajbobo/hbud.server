@@ -13,6 +13,9 @@ app.set('view engine', 'ejs');
 import requestLogger from 'morgan'
 config.get('env') === 'production' || app.use(requestLogger('dev'));
 
+import responseFinished from './internal/response.interceptor'
+app.use(responseFinished());
+
 app.use(router);
 
 const port = process.env.PORT || config.get(`network:${ process.env.appname }:port`) || 80;
