@@ -1,0 +1,23 @@
+<form action="/register" method="post">
+
+    <input type="text"
+           class="form-control"
+           placeholder="Имя пользователя"
+           name="username">
+
+    <input type="password"
+           class="form-control"
+           placeholder="Пароль"
+           name="password">
+
+    <select name="role" class="form-control">
+        <option value="visitor">Посетитель</option>
+        <option value="user">Пользователь</option>
+        <option value="admin">Администратор</option>
+    </select>
+
+    <br>
+
+    <input type="submit" class="btn btn-primary" value="Зарегистрировать"></input>
+
+</form>

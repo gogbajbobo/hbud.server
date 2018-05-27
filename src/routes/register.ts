@@ -4,7 +4,7 @@ import db from '../internal/db'
 const registerRoute = (router: Router) => {
 
     router.route('/register')
-        .get((req, res) => res.json({ info: 'hbud.api register get' }))
+        .get((req, res) => res.render('register'))
         .post((req, res) => res.json({ info: 'hbud.api register post' }))
 
 };
