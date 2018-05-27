@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import db from '../internal/db'
+import bcrypt from 'bcryptjs'
 
 const registerRoute = (router: Router) => {
 
@@ -9,15 +10,34 @@ const registerRoute = (router: Router) => {
 
         .post((req, res) => {
 
-            console.log(req.body);
-
-            const { username, password } = req.body;
+            const {username, password} = req.body;
             const role = req.body.role || 'visitor';
 
             if (!username || !password)
-                return res.status(400).json({error: true, code: 400});
+                return res.status(400).json({error: true, code: 400, message: 'Bad Request'});
 
-            res.json({ info: 'hbud.api register post', username, password, role })
+            bcrypt.hash(password, 10, (err, hash) => {
+
+                db('users')
+                    .insert({
+                        username,
+                        hash,
+                        role
+                    })
+                    .then(result => res.json(result))
+                    .catch(err => res.status(500).json({error: true, message: err.toLocaleString()}))
+
+            })
+
+        });
+
+    router.route('/users')
+        .get((req, res) => {
+
+            db('users')
+                .select()
+                .then(result => res.json(result))
+                .catch(err => res.status(500).json({error: true, message: err.toLocaleString()}))
 
         })
 
