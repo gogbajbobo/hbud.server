@@ -4,11 +4,11 @@ import express = require('express')
 import router from './routes/routes'
 import {AddressInfo} from "net";
 
-import logger from './internal/logger'
-const log = logger(module);
-
 const app = express();
 app.set('view engine', 'ejs');
+
+import logger from './internal/logger'
+const log = logger(module);
 
 import requestLogger from 'morgan'
 config.get('env') === 'production' || app.use(requestLogger('dev'));
