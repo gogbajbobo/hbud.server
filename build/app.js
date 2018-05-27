@@ -17,6 +17,8 @@ app.use(response_interceptor_1.default());
 const body_parser_1 = __importDefault(require("body-parser"));
 app.use(body_parser_1.default.urlencoded({ extended: true }));
 app.use(body_parser_1.default.json());
+const passport_1 = __importDefault(require("./internal/passport"));
+app.use(passport_1.default.initialize());
 app.use(routes_1.default);
 const port = process.env.PORT || config_1.default.get(`network:${process.env.appname}:port`) || 80;
 const server = app.listen(port, () => {
