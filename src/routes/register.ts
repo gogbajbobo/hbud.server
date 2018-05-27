@@ -32,6 +32,7 @@ const registerRoute = (router: Router) => {
         });
 
     router.route('/users')
+
         .get((req, res) => {
 
             db('users')
