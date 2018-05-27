@@ -10,6 +10,9 @@ const log = logger(module);
 const app = express();
 app.set('view engine', 'ejs');
 
+import requestLogger from 'morgan'
+config.get('env') === 'production' || app.use(requestLogger('dev'));
+
 app.use(router);
 
 const port = process.env.PORT || config.get(`network:${ process.env.appname }:port`) || 80;
