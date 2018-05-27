@@ -4,8 +4,22 @@ import db from '../internal/db'
 const registerRoute = (router: Router) => {
 
     router.route('/register')
+
         .get((req, res) => res.render('register'))
-        .post((req, res) => res.json({ info: 'hbud.api register post' }))
+
+        .post((req, res) => {
+
+            console.log(req.body);
+
+            const { username, password } = req.body;
+            const role = req.body.role || 'visitor';
+
+            if (!username || !password)
+                return res.status(400).json({error: true, code: 400});
+
+            res.json({ info: 'hbud.api register post', username, password, role })
+
+        })
 
 };
 
