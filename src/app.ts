@@ -4,10 +4,11 @@ import express = require('express')
 import router from './routes/routes'
 import {AddressInfo} from "net";
 
-const app = express();
-
 import logger from './internal/logger'
 const log = logger(module);
+
+const app = express();
+app.set('view engine', 'ejs');
 
 app.use(router);
 
