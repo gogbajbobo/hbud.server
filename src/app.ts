@@ -16,6 +16,10 @@ config.get('env') === 'production' || app.use(requestLogger('dev'));
 import responseFinished from './internal/response.interceptor'
 app.use(responseFinished());
 
+import bodyParser from 'body-parser'
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+
 app.use(router);
 
 const port = process.env.PORT || config.get(`network:${ process.env.appname }:port`) || 80;
