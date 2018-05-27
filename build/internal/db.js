@@ -14,4 +14,4 @@ const db = knex_1.default({
     connection: mysqlConfig,
     debug: false
 });
-exports.default = knex_1.default;
+exports.default = db;
