@@ -14,4 +14,4 @@ const db = knex({
     debug: false
 });
 
-export default knex
+export default db
