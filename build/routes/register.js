@@ -18,8 +18,9 @@ function requireRole(role) {
 }
 const registerRoute = (router) => {
     router.route('/register')
-        .get(passport_1.default.authenticate('jwt'), requireRole('admin'), (req, res) => res.render('register'))
-        .post(passport_1.default.authenticate('jwt'), requireRole('admin'), (req, res) => {
+        .all(passport_1.default.authenticate('jwt'), requireRole('admin'))
+        .get((req, res) => res.render('register'))
+        .post((req, res) => {
         const { username, password } = req.body;
         const role = req.body.role || 'visitor';
         if (!username || !password)
@@ -36,7 +37,8 @@ const registerRoute = (router) => {
         });
     });
     router.route('/users')
-        .get(passport_1.default.authenticate('jwt'), requireRole('admin'), (req, res) => {
+        .all(passport_1.default.authenticate('jwt'), requireRole('admin'))
+        .get((req, res) => {
         db_1.default('users')
             .select()
             .then(result => res.json(result))
