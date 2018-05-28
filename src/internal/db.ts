@@ -15,3 +15,10 @@ const db = knex({
 });
 
 export default db
+
+export interface UserModel {
+    id: number,
+    username: string,
+    role: string,
+    reauth: boolean
+}
