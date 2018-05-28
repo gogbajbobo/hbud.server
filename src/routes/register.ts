@@ -23,9 +23,11 @@ const registerRoute = (router: Router) => {
 
     router.route('/register')
 
-        .get(passport.authenticate('jwt'), requireRole('admin'), (req, res) => res.render('register'))
+        .all(passport.authenticate('jwt'), requireRole('admin'))
 
-        .post(passport.authenticate('jwt'), requireRole('admin'), (req, res) => {
+        .get((req, res) => res.render('register'))
+
+        .post((req, res) => {
 
             const {username, password} = req.body;
             const role = req.body.role || 'visitor';
@@ -50,7 +52,9 @@ const registerRoute = (router: Router) => {
 
     router.route('/users')
 
-        .get(passport.authenticate('jwt'), requireRole('admin'), (req, res) => {
+        .all(passport.authenticate('jwt'), requireRole('admin'))
+
+        .get((req, res) => {
 
             db('users')
                 .select()
