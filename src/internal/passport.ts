@@ -1,6 +1,7 @@
 import config from './config'
 import bcrypt from 'bcryptjs'
 import db from './db'
+import { UserModel } from "./db";
 
 import passport from 'passport'
 import passportLocal from 'passport-local'
@@ -95,11 +96,11 @@ function clearUserReauth(id: string) {
 
 }
 
-function serializeUser(user: any, done: (err: Error, user: any) => void) {
+function serializeUser(user: UserModel, done: (err: Error, userId: number) => void) {
     done(null, user.id);
 }
 
-function deserializeUser(id: string, done: (err: Error, user: any) => void) {
+function deserializeUser(id: string, done: (err: Error, user: UserModel) => void) {
     findUserById(id, (err, user) => { done(err, user); });
 }
 
