@@ -1,15 +1,31 @@
-import { Router } from 'express'
+import { Router, Request, Response, NextFunction } from 'express'
 import db from '../internal/db'
 import bcrypt from 'bcryptjs'
 import passport from '../internal/passport'
+
+function requireRole(role: string) {
+
+    return (req: Request, res: Response, next: NextFunction) => {
+
+        console.log(req.user);
+
+        req.user
+            ? role.includes(req.user.role)
+                ? next()
+                : res.status(401).send('Unauthorized').end()
+            : res.status(403).send('Forbidden').end()
+
+    }
+
+}
 
 const registerRoute = (router: Router) => {
 
     router.route('/register')
 
-        .get(passport.authenticate('jwt'), (req, res) => res.render('register'))
+        .get(passport.authenticate('jwt'), requireRole('admin'), (req, res) => res.render('register'))
 
-        .post(passport.authenticate('jwt'), (req, res) => {
+        .post(passport.authenticate('jwt'), requireRole('admin'), (req, res) => {
 
             const {username, password} = req.body;
             const role = req.body.role || 'visitor';
@@ -34,7 +50,7 @@ const registerRoute = (router: Router) => {
 
     router.route('/users')
 
-        .get(passport.authenticate('jwt'), (req, res) => {
+        .get(passport.authenticate('jwt'), requireRole('admin'), (req, res) => {
 
             db('users')
                 .select()
@@ -47,20 +63,3 @@ const registerRoute = (router: Router) => {
 
 export default registerRoute
 
-    // .post(passport.authenticate('jwt'), requireRole('admin'), (req, res) => {
-    //
-    //     const { username, password } = req.body;
-    //     const role = req.body.role || 'user';
-    //
-    //     bcrypt.hash(password, 10, (err, hash) => {
-    //
-    //         users
-    //             .insert({
-    //                 username,
-    //                 hash,
-    //                 role
-    //             })
-    //             .then(result => res.status(200).json(result))
-    //             .catch(err => catchErr(err, res))
-    //
-    //     })
