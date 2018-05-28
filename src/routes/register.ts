@@ -1,14 +1,15 @@
 import { Router } from 'express'
 import db from '../internal/db'
 import bcrypt from 'bcryptjs'
+import passport from '../internal/passport'
 
 const registerRoute = (router: Router) => {
 
     router.route('/register')
 
-        .get((req, res) => res.render('register'))
+        .get(passport.authenticate('jwt'), (req, res) => res.render('register'))
 
-        .post((req, res) => {
+        .post(passport.authenticate('jwt'), (req, res) => {
 
             const {username, password} = req.body;
             const role = req.body.role || 'visitor';
@@ -33,7 +34,7 @@ const registerRoute = (router: Router) => {
 
     router.route('/users')
 
-        .get((req, res) => {
+        .get(passport.authenticate('jwt'), (req, res) => {
 
             db('users')
                 .select()
