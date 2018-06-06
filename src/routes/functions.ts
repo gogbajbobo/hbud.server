@@ -7,8 +7,8 @@ function requireRole(role: string | string[]) {
 
         req.user
             ? role.includes(req.user.role)
-            ? next()
-            : res.status(401).send('Unauthorized').end()
+                ? next()
+                : res.status(401).send('Unauthorized').end()
             : res.status(403).send('Forbidden').end()
 
     }
@@ -16,7 +16,7 @@ function requireRole(role: string | string[]) {
 }
 
 function catchErr(err: Error, res: Response) {
-    res.status(500).json({ error: true, message: err.toLocaleString() })
+    res.status(500).json({ error: true, message: err.message })
 }
 
 function updateObject(table: string, id: number, data: any, res: Response) {
