@@ -10,6 +10,10 @@ const loginRoute = (router) => {
         .post(passport_1.default.authenticate('local'), (req, res) => {
         res.json(token_1.default.invokeToken(req.user, 'Login success'));
     });
+    router.route('/token')
+        .get(passport_1.default.authenticate('jwt'), (req, res) => {
+        res.json(token_1.default.invokeToken(req.user, 'Token exchange successfully'));
+    });
     router.route('/logout')
         .post(passport_1.default.authenticate('jwt'), (req, res) => {
         res.json({ error: false, message: 'logout success' });

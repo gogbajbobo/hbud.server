@@ -10,6 +10,11 @@ const loginRoute = (router: Router) => {
             res.json(token.invokeToken(req.user as UserModel, 'Login success'))
         });
 
+    router.route('/token')
+        .get(passport.authenticate('jwt'), (req, res) => {
+            res.json(token.invokeToken(req.user as UserModel, 'Token exchange successfully'))
+        });
+
     router.route('/logout')
         .post(passport.authenticate('jwt'), (req, res) => {
             res.json({ error: false, message: 'logout success' })
