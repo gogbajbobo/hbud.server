@@ -24,5 +24,5 @@ const port = config_1.default.get(`network:${process.env.appname}:port`);
 const host = config_1.default.get(`network:${process.env.appname}:hostname`);
 const server = app.listen(port, host, () => {
     const { address, port, family } = server.address();
-    log.info(`AUTH server listening at http://${address}:${port} ${family}`);
+    log.info(`HBUD server listening at http://${address}:${port} ${family}`);
 });
