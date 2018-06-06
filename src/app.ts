@@ -26,8 +26,9 @@ app.use(passport.initialize());
 app.use(router);
 
 const port = process.env.PORT || config.get(`network:${ process.env.appname }:port`) || 80;
+const host = process.env.HOST || config.get(`network:${ process.env.appname }:hostname`) || 'localhost';
 
-const server = app.listen(port, () => {
+const server = app.listen(port, host, () => {
 
     const { address, port, family } = server.address() as AddressInfo;
     log.info(`AUTH server listening at http://${ address }:${ port } ${ family }`)
