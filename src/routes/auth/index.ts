@@ -7,7 +7,7 @@ const authPath = '/auth';
 
 const authRoutes = (router: Router) => {
 
-    router.route('/auth/*')
+    router.route(`${ authPath }/*`)
         .all((req, res, next) => next());
 
     loginRoute(router, authPath);
