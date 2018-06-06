@@ -1,5 +1,5 @@
 import { Router, Request, Response, NextFunction } from 'express'
-import config from '../internal/config'
+import config from '../../internal/config'
 
 const network: Object = config.get(`network`);
 const allowedOrigins: string[] = Object.values(network).map(host => `${ host.protocol }://${ host.hostname }:${ host.port }`);

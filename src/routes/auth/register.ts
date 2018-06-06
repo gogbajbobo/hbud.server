@@ -1,7 +1,9 @@
 import { Router, Request, Response, NextFunction } from 'express'
-import db from '../internal/db'
+
 import bcrypt from 'bcryptjs'
-import passport from '../internal/passport'
+
+import db from '../../internal/db'
+import passport from '../../internal/passport'
 
 function requireRole(role: string) {
 
@@ -19,9 +21,9 @@ function requireRole(role: string) {
 
 }
 
-const registerRoute = (router: Router) => {
+const registerRoute = (router: Router, rootPath: string) => {
 
-    router.route('/register')
+    router.route(`${ rootPath }/register`)
 
         .all(passport.authenticate('jwt'), requireRole('admin'))
 
@@ -47,19 +49,6 @@ const registerRoute = (router: Router) => {
                     .catch(err => res.status(500).json({error: true, message: err.toLocaleString()}))
 
             })
-
-        });
-
-    router.route('/users')
-
-        .all(passport.authenticate('jwt'), requireRole('admin'))
-
-        .get((req, res) => {
-
-            db('users')
-                .select()
-                .then(result => res.json(result))
-                .catch(err => res.status(500).json({error: true, message: err.toLocaleString()}))
 
         })
 
