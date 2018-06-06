@@ -1,7 +1,7 @@
 import config from './internal/config'
 
 import express = require('express')
-import router from './routes/routes'
+import router from './routes'
 import {AddressInfo} from "net";
 
 const app = express();
