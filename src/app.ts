@@ -25,8 +25,8 @@ app.use(passport.initialize());
 
 app.use(router);
 
-const port = process.env.PORT || config.get(`network:${ process.env.appname }:port`) || 80;
-const host = process.env.HOST || config.get(`network:${ process.env.appname }:hostname`) || 'localhost';
+const port = config.get(`network:${ process.env.appname }:port`);
+const host = config.get(`network:${ process.env.appname }:hostname`);
 
 const server = app.listen(port, host, () => {
 
