@@ -7,7 +7,7 @@ const login_1 = __importDefault(require("./login"));
 const register_1 = __importDefault(require("./register"));
 const authPath = '/auth';
 const authRoutes = (router) => {
-    router.route('/auth/*')
+    router.route(`${authPath}/*`)
         .all((req, res, next) => next());
     login_1.default(router, authPath);
     register_1.default(router, authPath);
