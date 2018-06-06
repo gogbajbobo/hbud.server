@@ -1,7 +1,7 @@
 import config from './internal/config'
 
 import express = require('express')
-import router from './routes/routes'
+import router from './routes'
 import {AddressInfo} from "net";
 
 const app = express();
@@ -25,11 +25,12 @@ app.use(passport.initialize());
 
 app.use(router);
 
-const port = process.env.PORT || config.get(`network:${ process.env.appname }:port`) || 80;
+const port = config.get(`network:${ process.env.appname }:port`);
+const host = config.get(`network:${ process.env.appname }:hostname`);
 
-const server = app.listen(port, () => {
+const server = app.listen(port, host, () => {
 
     const { address, port, family } = server.address() as AddressInfo;
-    log.info(`AUTH server listening at http://${ address }:${ port } ${ family }`)
+    log.info(`HBUD server listening at http://${ address }:${ port } ${ family }`)
 
 });

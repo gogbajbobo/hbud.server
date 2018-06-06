@@ -1,11 +1,11 @@
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
-};
+}
 Object.defineProperty(exports, "__esModule", { value: true });
 const config_1 = __importDefault(require("./internal/config"));
 const express = require("express");
-const routes_1 = __importDefault(require("./routes/routes"));
+const routes_1 = __importDefault(require("./routes"));
 const app = express();
 app.set('view engine', 'ejs');
 const logger_1 = __importDefault(require("./internal/logger"));
@@ -20,8 +20,9 @@ app.use(body_parser_1.default.json());
 const passport_1 = __importDefault(require("./internal/passport"));
 app.use(passport_1.default.initialize());
 app.use(routes_1.default);
-const port = process.env.PORT || config_1.default.get(`network:${process.env.appname}:port`) || 80;
-const server = app.listen(port, () => {
+const port = config_1.default.get(`network:${process.env.appname}:port`);
+const host = config_1.default.get(`network:${process.env.appname}:hostname`);
+const server = app.listen(port, host, () => {
     const { address, port, family } = server.address();
-    log.info(`AUTH server listening at http://${address}:${port} ${family}`);
+    log.info(`HBUD server listening at http://${address}:${port} ${family}`);
 });

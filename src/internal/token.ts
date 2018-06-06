@@ -4,7 +4,7 @@ import { UserModel } from "./db";
 
 function invokeToken(user: UserModel, message: string): Object {
 
-    const tokenLifetime = 31 * 24 * 60 * 60; // seconds
+    const tokenLifetime = 2 * 24 * 60 * 60; // seconds
     const expirationTime = Math.floor(Date.now() / 1000) + tokenLifetime;
 
     const userData = {
