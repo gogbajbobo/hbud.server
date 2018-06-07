@@ -8,7 +8,8 @@ const protocol = config.get(`network:${ process.env.appname }:protocol`);
 const hostname = config.get(`network:${ process.env.appname }:hostname`);
 const port = config.get(`network:${ process.env.appname }:port`);
 
-const selfHost = `${ protocol }://${ hostname }:${ port }`;
+let selfHost = `${ protocol }://${ hostname }`;
+if (port) selfHost = `${ selfHost }:${ port }`;
 
 const rootRoute = (router: Router) => {
 
