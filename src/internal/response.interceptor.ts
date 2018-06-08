@@ -25,9 +25,9 @@ function responseFinished() {
 
 function logRequest(req: Request, res: Response) {
 
-    log.transports.console.level = 'error';
+    process.env.NODE_ENV === 'production' || (log.transports.console.level = 'error');
     log.info(req.method, req.originalUrl, res.statusCode, res.getHeader('Content-Length'), req.get('User-Agent'), req.ip);
-    log.transports.console.level = 'silly';
+    process.env.NODE_ENV === 'production' || (log.transports.console.level = 'silly');
 
 }
 
