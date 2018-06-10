@@ -91,8 +91,8 @@ function clearUserReauth(id: string) {
     db('users')
         .update({ reauth: false })
         .where({ id })
-        .then(() => log.info(`clearUserReauth ${ id } success`))
-        .catch(err => log.info(`clearUserReauth ${id} error ${err}`));
+        .then(() => log.info(`clearUserReauth userId:${ id } success`))
+        .catch(err => log.info(`clearUserReauth userId:${id} error ${err.message}`));
 
 }
 
