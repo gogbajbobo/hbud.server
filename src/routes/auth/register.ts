@@ -16,7 +16,7 @@ const registerRoute = (router: Router, rootPath: string) => {
 
     router.route(`${ rootPath }/register`)
 
-        .all(passport.authenticate('jwt'), fn.requireRole('admin'))
+        .all(passport.authenticate('jwt'), fn.requireRoles(['admin']))
 
         .get((req, res) => {
 

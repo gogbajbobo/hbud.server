@@ -9,7 +9,7 @@ const usersRoutes = (router: Router, rootPath: string) => {
 
     router.route(`${ rootPath }/users`)
 
-        .get(fn.requireRole('admin'), (req, res) => {
+        .get(fn.requireRoles(['admin']), (req, res) => {
 
             db('users')
                 .select(['id', 'username', 'role'])
@@ -20,7 +20,7 @@ const usersRoutes = (router: Router, rootPath: string) => {
 
     router.route(`${ rootPath }/users/:id`)
 
-        .get(fn.requireRole(['admin', 'user']), (req, res) => {
+        .get(fn.requireRoles(['admin', 'user']), (req, res) => {
 
             const id = req.params.id || 0;
 
@@ -32,7 +32,7 @@ const usersRoutes = (router: Router, rootPath: string) => {
 
         })
 
-        .put(fn.requireRole('admin'), (req, res) => {
+        .put(fn.requireRoles(['admin']), (req, res) => {
 
             const id = req.params.id;
 
@@ -62,7 +62,7 @@ const usersRoutes = (router: Router, rootPath: string) => {
 
         })
 
-        .delete(fn.requireRole('admin'), (req, res) => {
+        .delete(fn.requireRoles(['admin']), (req, res) => {
 
             const id = req.params.id || 0;
 

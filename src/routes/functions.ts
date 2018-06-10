@@ -1,16 +1,17 @@
 import {NextFunction, Request, Response} from "express";
 import db from "../internal/db";
 
-function requireRole(role: string | string[]) {
+function requireRoles(requiredRoles: string[]) {
 
     return (req: Request, res: Response, next: NextFunction) => {
 
-        req.user
-            ? role.includes(req.user.role)
-                ? next()
-                : res.status(401).send('Unauthorized').end()
-            : res.status(403).send('Forbidden').end()
+        if (!req.user)
+            return res.status(403).send('Forbidden').end();
 
+        req.user.roles.some((role: string) => requiredRoles.includes(role))
+            ? next()
+            : res.status(401).send('Unauthorized').end()
+        
     }
 
 }
@@ -30,7 +31,7 @@ function updateObject(table: string, id: number, data: any, res: Response) {
 }
 
 export default {
-    requireRole,
+    requireRoles,
     catchErr,
     updateObject
 }
