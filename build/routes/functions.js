@@ -4,13 +4,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = __importDefault(require("../internal/db"));
-function requireRole(role) {
+function requireRoles(requiredRoles) {
     return (req, res, next) => {
-        req.user
-            ? role.includes(req.user.role)
-                ? next()
-                : res.status(401).send('Unauthorized').end()
-            : res.status(403).send('Forbidden').end();
+        if (!req.user)
+            return res.status(403).send('Forbidden').end();
+        req.user.roles.some((role) => requiredRoles.includes(role))
+            ? next()
+            : res.status(401).send('Unauthorized').end();
     };
 }
 function catchErr(err, res) {
@@ -24,7 +24,7 @@ function updateObject(table, id, data, res) {
         .catch(err => catchErr(err, res));
 }
 exports.default = {
-    requireRole,
+    requireRoles,
     catchErr,
     updateObject
 };

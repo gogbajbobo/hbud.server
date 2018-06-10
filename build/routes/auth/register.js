@@ -9,7 +9,7 @@ const passport_1 = __importDefault(require("../../internal/passport"));
 const functions_1 = __importDefault(require("../functions"));
 const registerRoute = (router, rootPath) => {
     router.route(`${rootPath}/register`)
-        .all(passport_1.default.authenticate('jwt'), functions_1.default.requireRole('admin'))
+        .all(passport_1.default.authenticate('jwt'), functions_1.default.requireRoles(['admin']))
         .get((req, res) => {
         db_1.default('roles')
             .select()
