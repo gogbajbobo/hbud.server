@@ -11,7 +11,7 @@ function requireRoles(requiredRoles: string[]) {
         req.user.roles.some((role: string) => requiredRoles.includes(role))
             ? next()
             : res.status(401).send('Unauthorized').end()
-        
+
     }
 
 }
