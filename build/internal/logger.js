@@ -5,7 +5,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
     result["default"] = mod;
     return result;
-}
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const winston = __importStar(require("winston"));
 require('winston-daily-rotate-file');
@@ -18,7 +18,7 @@ function logger(module) {
     });
     const dailyRotateFileLogger = new winston.transports.DailyRotateFile({
         timestamp: true,
-        dirname: `../../../hbud.logs/${process.env.appname}/`,
+        dirname: `../hbud.logs/${process.env.appname}/`,
         filename: `${process.env.appname}-%DATE%.log`,
         datePattern: 'YYYY-MM-DD',
         zippedArchive: false,
