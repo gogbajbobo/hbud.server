@@ -5,6 +5,12 @@ import bcrypt from 'bcryptjs'
 import db from '../../internal/db'
 import passport from '../../internal/passport'
 import fn from '../functions'
+import {use} from "nconf";
+
+interface UsersRolesObject {
+    users_id: number,
+    roles_id: number
+}
 
 const registerRoute = (router: Router, rootPath: string) => {
 
@@ -12,27 +18,48 @@ const registerRoute = (router: Router, rootPath: string) => {
 
         .all(passport.authenticate('jwt'), fn.requireRole('admin'))
 
-        .get((req, res) => res.render('register'))
+        .get((req, res) => {
+
+            db('roles')
+                .select()
+                .then(roles => res.render('register', { roles }))
+                .catch(err => fn.catchErr(err, res))
+
+        })
 
         .post((req, res) => {
 
-            const {username, password} = req.body;
+            const {username, password, roles} = req.body;
 
-            if (!username || !password)
+            if (!username || !password || !roles)
                 return res.status(400).json({error: true, code: 400, message: 'Bad Request'});
-
-            const role = req.body.role || 'visitor';
 
             bcrypt.hash(password, 10, (err, hash) => {
 
-                db('users')
-                    .insert({
-                        username,
-                        hash,
-                        role
-                    })
-                    .then(result => res.json(result))
-                    .catch(err => fn.catchErr(err, res))
+                db.transaction(trx => {
+
+                    return trx
+                        .insert({ username, hash })
+                        .into('users')
+                        .then(result => {
+
+                            const
+                                userId: number = result[0],
+                                users_roles: UsersRolesObject[] = roles.map((roleId: number) => {
+                                    return { users_id: userId, roles_id: roleId }
+                                });
+
+                            return trx
+                                .insert(users_roles)
+                                .into('users_roles')
+                                .then(result => console.log(result))
+                                .catch(err => fn.catchErr(err, res));
+
+                        })
+
+                })
+                .then(result => res.json({ result }))
+                .catch(err => console.error(err.message))
 
             })
 
