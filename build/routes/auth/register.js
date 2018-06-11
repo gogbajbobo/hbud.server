@@ -5,14 +5,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const db_1 = __importDefault(require("../../internal/db"));
+const roles_1 = __importDefault(require("../../internal/db/roles"));
 const passport_1 = __importDefault(require("../../internal/passport"));
 const functions_1 = __importDefault(require("../functions"));
 const registerRoute = (router, rootPath) => {
     router.route(`${rootPath}/register`)
         .all(passport_1.default.authenticate('jwt'), functions_1.default.requireRoles(['admin']))
         .get((req, res) => {
-        db_1.default('roles')
-            .select()
+        roles_1.default.getRoles()
             .then(roles => res.render('register', { roles }))
             .catch(err => functions_1.default.catchErr(err, res));
     })

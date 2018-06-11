@@ -15,7 +15,7 @@ const usersRoutes = (router, rootPath) => {
     router.route(usersPath)
         .get((req, res) => {
         users_1.default.getUsersWithRoles(['id', 'username'])
-            .then(users => res.status(200).json({ error: false, users: users }))
+            .then(users => res.status(200).json({ error: false, users }))
             .catch(err => functions_1.default.catchErr(err, res));
     });
     router.route(usersIdPath)
