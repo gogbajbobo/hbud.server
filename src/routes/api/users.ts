@@ -8,9 +8,15 @@ import fn from '../functions'
 
 const usersRoutes = (router: Router, rootPath: string) => {
 
-    router.route(`${ rootPath }/users`)
+    const usersPath = `${ rootPath }/users`;
+    const usersIdPath = `${ rootPath }/users/:id`;
 
-        .get(fn.requireRoles(['admin']), (req, res) => {
+    router.route([usersPath, usersIdPath])
+        .all(fn.requireRoles(['admin']), (req, res, next) => next());
+
+    router.route(usersPath)
+
+        .get((req, res) => {
 
             Users.getUsersWithRoles(['id', 'username'])
                 .then(users => res.status(200).json({ error: false, users: users }))
@@ -18,9 +24,9 @@ const usersRoutes = (router: Router, rootPath: string) => {
 
         });
 
-    router.route(`${ rootPath }/users/:id`)
+    router.route(usersIdPath)
 
-        .get(fn.requireRoles(['admin', 'user']), (req, res) => {
+        .get((req, res) => {
 
             const id = req.params.id || 0;
 
@@ -30,7 +36,7 @@ const usersRoutes = (router: Router, rootPath: string) => {
 
         })
 
-        .put(fn.requireRoles(['admin']), (req, res) => {
+        .put((req, res) => {
 
             const id = req.params.id;
 
@@ -60,7 +66,7 @@ const usersRoutes = (router: Router, rootPath: string) => {
 
         })
 
-        .delete(fn.requireRoles(['admin']), (req, res) => {
+        .delete((req, res) => {
 
             const id = req.params.id || 0;
 
