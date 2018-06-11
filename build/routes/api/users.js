@@ -9,16 +9,18 @@ const functions_1 = __importDefault(require("../functions"));
 const usersRoutes = (router, rootPath) => {
     router.route(`${rootPath}/users`)
         .get(functions_1.default.requireRoles(['admin']), (req, res) => {
+        //TODO: have to return users with roles
         db_1.default('users')
-            .select(['id', 'username', 'role'])
+            .select(['id', 'username'])
             .then(users => res.status(200).json({ error: false, users: users }))
             .catch(err => functions_1.default.catchErr(err, res));
     });
     router.route(`${rootPath}/users/:id`)
         .get(functions_1.default.requireRoles(['admin', 'user']), (req, res) => {
         const id = req.params.id || 0;
+        //TODO: have to return users with roles
         db_1.default('users')
-            .select(['id', 'username', 'role'])
+            .select(['id', 'username'])
             .where({ id })
             .then(result => res.status(200).json({ error: false, user: result[0] }))
             .catch(err => functions_1.default.catchErr(err, res));
@@ -44,6 +46,7 @@ const usersRoutes = (router, rootPath) => {
     })
         .delete(functions_1.default.requireRoles(['admin']), (req, res) => {
         const id = req.params.id || 0;
+        //TODO: check users_roles delete as well
         db_1.default('users')
             .delete()
             .where({ id })

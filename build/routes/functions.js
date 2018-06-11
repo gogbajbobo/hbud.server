@@ -7,10 +7,10 @@ const db_1 = __importDefault(require("../internal/db"));
 function requireRoles(requiredRoles) {
     return (req, res, next) => {
         if (!req.user)
-            return res.status(403).send('Forbidden').end();
-        req.user.roles.some((role) => requiredRoles.includes(role))
+            return res.status(401).send('Unauthorized').end();
+        req.user.roles.split(',').some((role) => requiredRoles.includes(role))
             ? next()
-            : res.status(401).send('Unauthorized').end();
+            : res.status(403).send('Forbidden').end();
     };
 }
 function catchErr(err, res) {
