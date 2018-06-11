@@ -4,6 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = __importDefault(require("../internal/db"));
+const logger_1 = __importDefault(require("../internal/logger"));
+const log = logger_1.default(module);
 function requireRoles(requiredRoles) {
     return (req, res, next) => {
         if (!req.user)
@@ -14,6 +16,7 @@ function requireRoles(requiredRoles) {
     };
 }
 function catchErr(err, res) {
+    log.debug(err.message);
     res.status(500).json({ error: true, message: err.message });
 }
 function updateObject(table, id, data, res) {

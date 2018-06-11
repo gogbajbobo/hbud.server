@@ -5,23 +5,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const db_1 = __importDefault(require("../../internal/db"));
+const users_1 = __importDefault(require("../../internal/db/users"));
 const functions_1 = __importDefault(require("../functions"));
 const usersRoutes = (router, rootPath) => {
     router.route(`${rootPath}/users`)
         .get(functions_1.default.requireRoles(['admin']), (req, res) => {
-        //TODO: have to return users with roles
-        db_1.default('users')
-            .select(['id', 'username'])
+        users_1.default.getUsersWithRoles(['id', 'username'])
             .then(users => res.status(200).json({ error: false, users: users }))
             .catch(err => functions_1.default.catchErr(err, res));
     });
     router.route(`${rootPath}/users/:id`)
         .get(functions_1.default.requireRoles(['admin', 'user']), (req, res) => {
         const id = req.params.id || 0;
-        //TODO: have to return users with roles
-        db_1.default('users')
-            .select(['id', 'username'])
-            .where({ id })
+        users_1.default.getUsersWithRoles(['id', 'username'], { id })
             .then(result => res.status(200).json({ error: false, user: result[0] }))
             .catch(err => functions_1.default.catchErr(err, res));
     })
