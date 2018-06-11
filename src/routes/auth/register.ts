@@ -1,11 +1,10 @@
-import { Router, Request, Response, NextFunction } from 'express'
+import { Router } from 'express'
 
 import bcrypt from 'bcryptjs'
 
 import db from '../../internal/db'
 import passport from '../../internal/passport'
 import fn from '../functions'
-import {use} from "nconf";
 
 interface UsersRolesObject {
     users_id: number,
