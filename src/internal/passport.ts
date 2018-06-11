@@ -1,7 +1,8 @@
 import config from './config'
 import bcrypt from 'bcryptjs'
-import db from './db'
-import { UserModel } from "./db";
+
+import db, { UserModel } from './db'
+import Users from "./db/users";
 
 import passport from 'passport'
 import passportLocal from 'passport-local'
@@ -63,12 +64,7 @@ passport.deserializeUser(deserializeUser);
 
 function findUserByUsername(username: string, callback: (err: Error, user: any) => void) {
 
-    db('users as u')
-        .select(db.raw(`??, group_concat(distinct ?? separator ',') as roles`, ['u.*', 'r.rolename']))
-        .innerJoin('users_roles as u_r','u.id', '=', 'u_r.users_id')
-        .innerJoin('roles as r', 'u_r.roles_id', '=', 'r.id')
-        .where('u.username', username)
-        .groupBy('u.id')
+    Users.getUsersWithRoles(['*'], { username })
         .then(users => Promise.resolve(callback(null, users[0])))
         .catch(err => Promise.resolve(callback(err, false)))
 
