@@ -63,10 +63,14 @@ passport.deserializeUser(deserializeUser);
 
 function findUserByUsername(username: string, callback: (err: Error, user: any) => void) {
 
-    db('users')
-        .where({ username })
-        .then(users => Promise.resolve(callback(null, users[0])))
-        .catch(err => Promise.resolve(callback(err, false)))
+    db('users as u')
+        .select(db.raw(`??, group_concat(distinct ?? separator ',') as rolenames`, ['u.*', 'r.rolename']))
+        .innerJoin('users_roles as u_r','u.id', '=', 'u_r.users_id')
+        .innerJoin('roles as r', 'u_r.roles_id', '=', 'r.id')
+        .where('u.username', username)
+        .groupBy('u.id')
+        .then(users => callback(null, users[0]))
+        .catch(err => callback(err, false))
 
 }
 
