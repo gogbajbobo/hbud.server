@@ -19,7 +19,7 @@ const usersRoutes = (router: Router, rootPath: string) => {
         .get((req, res) => {
 
             Users.getUsersWithRoles(['id', 'username'])
-                .then(users => res.status(200).json({ error: false, users: users }))
+                .then(users => res.status(200).json({ error: false, users }))
                 .catch(err => fn.catchErr(err, res))
 
         });
