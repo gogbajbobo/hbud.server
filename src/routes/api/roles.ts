@@ -2,6 +2,7 @@ import { Router } from 'express'
 
 import db from '../../internal/db'
 import fn from '../functions'
+import Roles from "../../internal/db/roles";
 
 const usersRoutes = (router: Router, rootPath: string) => {
 
@@ -14,7 +15,11 @@ const usersRoutes = (router: Router, rootPath: string) => {
     router.route(rolesPath)
 
         .get((req, res) => {
-            res.status(501).json({error: true, message: `Not Implemented`})
+
+            Roles.getRoles()
+                .then(roles => res.status(200).json({ error: false, roles }))
+                .catch(err => fn.catchErr(err, res))
+
         });
 
     router.route(rolesIdPath)
