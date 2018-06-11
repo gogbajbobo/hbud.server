@@ -12,7 +12,7 @@ const usersRoutes = (router: Router, rootPath: string) => {
         .get(fn.requireRoles(['admin']), (req, res) => {
 
             db('users')
-                .select(['id', 'username', 'role'])
+                .select(['id', 'username'])
                 .then(users => res.status(200).json({ error: false, users: users }))
                 .catch(err => fn.catchErr(err, res))
 
@@ -25,7 +25,7 @@ const usersRoutes = (router: Router, rootPath: string) => {
             const id = req.params.id || 0;
 
             db('users')
-                .select(['id', 'username', 'role'])
+                .select(['id', 'username'])
                 .where({ id })
                 .then(result => res.status(200).json({ error: false, user: result[0] }))
                 .catch(err => fn.catchErr(err, res))
