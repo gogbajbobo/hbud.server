@@ -1,5 +1,4 @@
 import db from './'
-import {any} from "nconf";
 
 class Users {
 
