@@ -69,8 +69,8 @@ function findUserByUsername(username: string, callback: (err: Error, user: any) 
         .innerJoin('roles as r', 'u_r.roles_id', '=', 'r.id')
         .where('u.username', username)
         .groupBy('u.id')
-        .then(users => callback(null, users[0]))
-        .catch(err => callback(err, false))
+        .then(users => Promise.resolve(callback(null, users[0])))
+        .catch(err => Promise.resolve(callback(err, false)))
 
 }
 
