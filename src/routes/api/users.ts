@@ -11,6 +11,8 @@ const usersRoutes = (router: Router, rootPath: string) => {
 
         .get(fn.requireRoles(['admin']), (req, res) => {
 
+            //TODO: have to return users with roles
+
             db('users')
                 .select(['id', 'username'])
                 .then(users => res.status(200).json({ error: false, users: users }))
@@ -23,6 +25,8 @@ const usersRoutes = (router: Router, rootPath: string) => {
         .get(fn.requireRoles(['admin', 'user']), (req, res) => {
 
             const id = req.params.id || 0;
+
+            //TODO: have to return users with roles
 
             db('users')
                 .select(['id', 'username'])
@@ -65,6 +69,8 @@ const usersRoutes = (router: Router, rootPath: string) => {
         .delete(fn.requireRoles(['admin']), (req, res) => {
 
             const id = req.params.id || 0;
+
+            //TODO: check users_roles delete as well
 
             db('users')
                 .delete()
