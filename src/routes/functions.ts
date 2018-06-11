@@ -11,7 +11,9 @@ function requireRoles(requiredRoles: string[]) {
         if (!req.user)
             return res.status(401).send('Unauthorized').end();
 
-        req.user.roles.split(',').some((role: string) => requiredRoles.includes(role))
+        const checkRole = (role: string): boolean => requiredRoles.includes(role);
+
+        req.user.roles.split(',').some(checkRole)
             ? next()
             : res.status(403).send('Forbidden').end()
 
