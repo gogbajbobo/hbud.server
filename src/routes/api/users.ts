@@ -3,6 +3,7 @@ import { Router } from 'express'
 import bcrypt from 'bcryptjs'
 
 import db from '../../internal/db'
+import Users from '../../internal/db/users'
 import fn from '../functions'
 
 const usersRoutes = (router: Router, rootPath: string) => {
@@ -11,10 +12,7 @@ const usersRoutes = (router: Router, rootPath: string) => {
 
         .get(fn.requireRoles(['admin']), (req, res) => {
 
-            //TODO: have to return users with roles
-
-            db('users')
-                .select(['id', 'username'])
+            Users.getUsersWithRoles(['id', 'username'])
                 .then(users => res.status(200).json({ error: false, users: users }))
                 .catch(err => fn.catchErr(err, res))
 
@@ -26,11 +24,7 @@ const usersRoutes = (router: Router, rootPath: string) => {
 
             const id = req.params.id || 0;
 
-            //TODO: have to return users with roles
-
-            db('users')
-                .select(['id', 'username'])
-                .where({ id })
+            Users.getUsersWithRoles(['id', 'username'], { id })
                 .then(result => res.status(200).json({ error: false, user: result[0] }))
                 .catch(err => fn.catchErr(err, res))
 
