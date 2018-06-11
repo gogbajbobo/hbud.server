@@ -11,7 +11,7 @@ function invokeToken(user, message) {
     const userData = {
         id: user.id,
         username: user.username,
-        roles: user.roles.split(','),
+        roles: user.roles,
         exp: expirationTime
     };
     const accessToken = jsonwebtoken_1.default.sign(userData, config_1.default.get('jwt:secretKey'));

@@ -10,7 +10,7 @@ function invokeToken(user: UserModel, message: string): Object {
     const userData = {
         id: user.id,
         username: user.username,
-        roles: user.roles.split(','),
+        roles: user.roles,
         exp: expirationTime
     };
 
