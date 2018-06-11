@@ -1,6 +1,9 @@
 import {NextFunction, Request, Response} from "express"
 import db from "../internal/db"
 
+import logger from '../internal/logger'
+const log = logger(module);
+
 function requireRoles(requiredRoles: string[]) {
 
     return (req: Request, res: Response, next: NextFunction) => {
@@ -17,7 +20,10 @@ function requireRoles(requiredRoles: string[]) {
 }
 
 function catchErr(err: Error, res: Response) {
+
+    log.debug(err.message);
     res.status(500).json({ error: true, message: err.message })
+
 }
 
 function updateObject(table: string, id: number, data: any, res: Response) {
