@@ -3,6 +3,7 @@ import { Router } from 'express'
 import bcrypt from 'bcryptjs'
 
 import db from '../../internal/db'
+import Roles from '../../internal/db/roles'
 import passport from '../../internal/passport'
 import fn from '../functions'
 
@@ -19,8 +20,7 @@ const registerRoute = (router: Router, rootPath: string) => {
 
         .get((req, res) => {
 
-            db('roles')
-                .select()
+            Roles.getRoles()
                 .then(roles => res.render('register', { roles }))
                 .catch(err => fn.catchErr(err, res))
 
