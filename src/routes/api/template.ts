@@ -1,39 +1,31 @@
 import { Router } from 'express'
-
-import db from '../../internal/db'
 import fn from '../functions'
-import Roles from "../../internal/db/roles";
 
-const rolesRoutes = (router: Router, rootPath: string) => {
+const templateRoutes = (router: Router, rootPath: string) => {
 
-    const rolesPath = `${ rootPath }/roles`;
-    const rolesIdPath = `${ rootPath }/roles/:id`;
+    const templatePath = `${ rootPath }/template`;
+    const templateIdPath = `${ rootPath }/template/:id`;
 
-    router.route([rolesPath, rolesIdPath])
+    router.route([templatePath, templateIdPath])
         .all(fn.requireRoles(['admin']), (req, res, next) => next());
 
-    router.route(rolesPath)
+    router.route(templatePath)
 
         .get((req, res) => {
-
-            Roles.getRoles()
-                .then(roles => res.status(200).json({ error: false, roles }))
-                .catch(err => fn.catchErr(err, res))
-
+            res.status(501).json({error: true, message: `Not Implemented`})
         })
 
         .post((req, res) => {
             res.status(501).json({error: true, message: `Not Implemented`})
         });
 
-
-    router.route(rolesIdPath)
+    router.route(templateIdPath)
 
         .all((req, res, next) => {
 
             return (req.params.id)
                 ? next()
-                : res.status(400).json({error: true, message: `have no role's id`})
+                : res.status(400).json({error: true, message: `have no id`})
 
         })
 
@@ -51,4 +43,4 @@ const rolesRoutes = (router: Router, rootPath: string) => {
 
 };
 
-export default rolesRoutes
+export default templateRoutes

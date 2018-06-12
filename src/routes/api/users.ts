@@ -22,13 +22,26 @@ const usersRoutes = (router: Router, rootPath: string) => {
                 .then(users => res.status(200).json({ error: false, users }))
                 .catch(err => fn.catchErr(err, res))
 
+        })
+
+        .post((req, res) => {
+            res.status(501).json({error: true, message: `Not Implemented`})
         });
+
 
     router.route(usersIdPath)
 
+        .all((req, res, next) => {
+
+            return (req.params.id)
+                ? next()
+                : res.status(400).json({error: true, message: `have no user's id`})
+
+        })
+
         .get((req, res) => {
 
-            const id = req.params.id || 0;
+            const id = req.params.id;
 
             Users.getUsersWithRoles(['id', 'username'], { id })
                 .then(result => res.status(200).json({ error: false, user: result[0] }))
@@ -40,10 +53,7 @@ const usersRoutes = (router: Router, rootPath: string) => {
 
             const id = req.params.id;
 
-            if (!id)
-                return res.status(400).json({error: true, message: `have no user's id`});
-
-            const { username, password, role } = req.body;
+            const { username, password, roles } = req.body;
 
             if (password) {
 
@@ -51,7 +61,7 @@ const usersRoutes = (router: Router, rootPath: string) => {
 
                     const data = {
                         username,
-                        role,
+                        roles,
                         hash
                     };
 
@@ -60,7 +70,7 @@ const usersRoutes = (router: Router, rootPath: string) => {
                 })
 
             } else {
-                fn.updateObject('users', id, {username, role}, res)
+                fn.updateObject('users', id, {username, roles}, res)
             }
 
 
@@ -68,7 +78,7 @@ const usersRoutes = (router: Router, rootPath: string) => {
 
         .delete((req, res) => {
 
-            const id = req.params.id || 0;
+            const id = req.params.id;
 
             db('users')
                 .delete()
