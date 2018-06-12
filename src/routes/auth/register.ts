@@ -58,7 +58,7 @@ const registerRoute = (router: Router, rootPath: string) => {
 
                 })
                 .then(result => res.json({ result }))
-                .catch(err => console.error(err.message))
+                .catch(err => fn.catchErr(err, res))
 
             })
 
