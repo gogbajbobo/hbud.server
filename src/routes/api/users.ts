@@ -70,8 +70,6 @@ const usersRoutes = (router: Router, rootPath: string) => {
 
             const id = req.params.id || 0;
 
-            //TODO: check users_roles delete as well
-
             db('users')
                 .delete()
                 .where({ id })
