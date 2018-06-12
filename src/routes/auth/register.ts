@@ -42,17 +42,17 @@ const registerRoute = (router: Router, rootPath: string) => {
                         .into('users')
                         .then(result => {
 
+                            const checkedRoles = (roles instanceof Array) ? roles : [roles];
+
                             const
                                 userId: number = result[0],
-                                users_roles: UsersRolesObject[] = roles.map((roleId: number) => {
+                                users_roles: UsersRolesObject[] = checkedRoles.map((roleId: number) => {
                                     return { users_id: userId, roles_id: roleId }
                                 });
 
                             return trx
                                 .insert(users_roles)
                                 .into('users_roles')
-                                .then(result => console.log(result))
-                                .catch(err => fn.catchErr(err, res));
 
                         })
 
