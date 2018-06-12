@@ -26,18 +26,17 @@ const registerRoute = (router, rootPath) => {
                     .insert({ username, hash })
                     .into('users')
                     .then(result => {
-                    const userId = result[0], users_roles = roles.map((roleId) => {
+                    const checkedRoles = (roles instanceof Array) ? roles : [roles];
+                    const userId = result[0], users_roles = checkedRoles.map((roleId) => {
                         return { users_id: userId, roles_id: roleId };
                     });
                     return trx
                         .insert(users_roles)
-                        .into('users_roles')
-                        .then(result => console.log(result))
-                        .catch(err => functions_1.default.catchErr(err, res));
+                        .into('users_roles');
                 });
             })
                 .then(result => res.json({ result }))
-                .catch(err => console.error(err.message));
+                .catch(err => functions_1.default.catchErr(err, res));
         });
     });
 };
