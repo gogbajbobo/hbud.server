@@ -17,35 +17,41 @@ const usersRoutes = (router, rootPath) => {
         users_1.default.getUsersWithRoles(['id', 'username'])
             .then(users => res.status(200).json({ error: false, users }))
             .catch(err => functions_1.default.catchErr(err, res));
+    })
+        .post((req, res) => {
+        res.status(501).json({ error: true, message: `Not Implemented` });
     });
     router.route(usersIdPath)
+        .all((req, res, next) => {
+        return (req.params.id)
+            ? next()
+            : res.status(400).json({ error: true, message: `have no user's id` });
+    })
         .get((req, res) => {
-        const id = req.params.id || 0;
+        const id = req.params.id;
         users_1.default.getUsersWithRoles(['id', 'username'], { id })
             .then(result => res.status(200).json({ error: false, user: result[0] }))
             .catch(err => functions_1.default.catchErr(err, res));
     })
         .put((req, res) => {
         const id = req.params.id;
-        if (!id)
-            return res.status(400).json({ error: true, message: `have no user's id` });
-        const { username, password, role } = req.body;
+        const { username, password, roles } = req.body;
         if (password) {
             bcryptjs_1.default.hash(password, 10, (err, hash) => {
                 const data = {
                     username,
-                    role,
+                    roles,
                     hash
                 };
                 functions_1.default.updateObject('users', id, data, res);
             });
         }
         else {
-            functions_1.default.updateObject('users', id, { username, role }, res);
+            functions_1.default.updateObject('users', id, { username, roles }, res);
         }
     })
         .delete((req, res) => {
-        const id = req.params.id || 0;
+        const id = req.params.id;
         db_1.default('users')
             .delete()
             .where({ id })
