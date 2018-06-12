@@ -10,7 +10,7 @@
            placeholder="Пароль"
            name="password">
 
-    <select name="roles" class="form-control" multiple>
+    <select name="roles[]" class="form-control" multiple>
 
         <% roles.forEach(role => { %>
             <option value="<%= role.id %>">
