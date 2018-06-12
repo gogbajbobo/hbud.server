@@ -37,7 +37,7 @@ const registerRoute = (router, rootPath) => {
                 });
             })
                 .then(result => res.json({ result }))
-                .catch(err => console.error(err.message));
+                .catch(err => functions_1.default.catchErr(err, res));
         });
     });
 };
