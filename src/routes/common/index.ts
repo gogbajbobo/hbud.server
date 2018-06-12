@@ -6,7 +6,7 @@ import rootRoute from './root'
 const commonRoutes = (router: Router) => {
 
     cors(router);
-    rootRoute(router);
+    rootRoute(router)
 
 };
 

@@ -1,11 +1,12 @@
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
-}
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const config_1 = __importDefault(require("./config"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const db_1 = __importDefault(require("./db"));
+const users_1 = __importDefault(require("./db/users"));
 const passport_1 = __importDefault(require("passport"));
 const passport_local_1 = __importDefault(require("passport-local"));
 const passport_jwt_1 = __importDefault(require("passport-jwt"));
@@ -47,8 +48,7 @@ passport_1.default.use(new JwtStrategy(opts, (jwtPayload, done) => {
 passport_1.default.serializeUser(serializeUser);
 passport_1.default.deserializeUser(deserializeUser);
 function findUserByUsername(username, callback) {
-    db_1.default('users')
-        .where({ username })
+    users_1.default.getUsersWithRoles(['*'], { username })
         .then(users => Promise.resolve(callback(null, users[0])))
         .catch(err => Promise.resolve(callback(err, false)));
 }
@@ -67,8 +67,8 @@ function clearUserReauth(id) {
     db_1.default('users')
         .update({ reauth: false })
         .where({ id })
-        .then(() => log.info(`clearUserReauth ${id} success`))
-        .catch(err => log.info(`clearUserReauth ${id} error ${err}`));
+        .then(() => log.info(`clearUserReauth userId:${id} success`))
+        .catch(err => log.info(`clearUserReauth userId:${id} error ${err.message}`));
 }
 function serializeUser(user, done) {
     done(null, user.id);

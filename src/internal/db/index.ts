@@ -1,7 +1,7 @@
-import config from './config'
+import config from '../config'
 import knex from 'knex'
 
-import logger from './logger'
+import logger from '../logger'
 const log = logger(module);
 
 const mysqlConfig = config.get('mysql');
@@ -19,6 +19,6 @@ export default db
 export interface UserModel {
     id: number,
     username: string,
-    role: string,
+    roles: string,
     reauth: boolean
 }

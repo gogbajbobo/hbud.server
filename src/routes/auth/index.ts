@@ -11,7 +11,7 @@ const authRoutes = (router: Router) => {
         .all((req, res, next) => next());
 
     loginRoute(router, authPath);
-    registerRoute(router, authPath);
+    registerRoute(router, authPath)
 
 };
 

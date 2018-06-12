@@ -8,9 +8,9 @@ function invokeToken(user: UserModel, message: string): Object {
     const expirationTime = Math.floor(Date.now() / 1000) + tokenLifetime;
 
     const userData = {
-        username: user.username,
-        role: user.role,
         id: user.id,
+        username: user.username,
+        roles: user.roles,
         exp: expirationTime
     };
 

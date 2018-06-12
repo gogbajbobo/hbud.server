@@ -1,7 +1,8 @@
 import { Router } from 'express'
 
 import usersRoutes from './users'
-import passport from "../../internal/passport";
+import rolesRoutes from './roles'
+import passport from "../../internal/passport"
 
 const apiPath = '/api';
 
@@ -11,6 +12,7 @@ const apiRoutes = (router: Router) => {
         .all(passport.authenticate('jwt'), (req, res, next) => next());
 
     usersRoutes(router, apiPath);
+    rolesRoutes(router, apiPath)
 
 };
 

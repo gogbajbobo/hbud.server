@@ -1,15 +1,23 @@
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
-}
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const config_1 = __importDefault(require("../../internal/config"));
 const network = config_1.default.get(`network`);
-const allowedOrigins = Object.values(network).map(host => `${host.protocol}://${host.hostname}:${host.port}`);
+const allowedOrigins = Object.values(network).map(host => {
+    return makeOrigin(host.protocol, host.hostname, host.port);
+});
 const protocol = config_1.default.get(`network:${process.env.appname}:protocol`);
 const hostname = config_1.default.get(`network:${process.env.appname}:hostname`);
 const port = config_1.default.get(`network:${process.env.appname}:port`);
-const selfHost = `${protocol}://${hostname}:${port}`;
+let selfHost = makeOrigin(protocol, hostname, port);
+function makeOrigin(protocol, hostname, port) {
+    let origin = `${protocol}://${hostname}`;
+    if (process.env.NODE_ENV !== 'production' && port)
+        origin = `${origin}:${port}`;
+    return origin;
+}
 const rootRoute = (router) => {
     router.route('*')
         .all((req, res, next) => {
