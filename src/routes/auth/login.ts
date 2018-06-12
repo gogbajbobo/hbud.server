@@ -19,7 +19,7 @@ const loginRoute = (router: Router, rootPath: string) => {
     router.route(`${ rootPath }/logout`)
         .post(passport.authenticate('jwt'), (req, res) => {
             res.json({ error: false, message: 'logout success' })
-        });
+        })
 
 };
 

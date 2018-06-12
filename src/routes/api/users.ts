@@ -3,43 +3,57 @@ import { Router } from 'express'
 import bcrypt from 'bcryptjs'
 
 import db from '../../internal/db'
+import Users from '../../internal/db/users'
 import fn from '../functions'
 
 const usersRoutes = (router: Router, rootPath: string) => {
 
-    router.route(`${ rootPath }/users`)
+    const usersPath = `${ rootPath }/users`;
+    const usersIdPath = `${ rootPath }/users/:id`;
 
-        .get(fn.requireRole('admin'), (req, res) => {
+    router.route([usersPath, usersIdPath])
+        .all(fn.requireRoles(['admin']), (req, res, next) => next());
 
-            db('users')
-                .select(['id', 'username', 'role'])
-                .then(users => res.status(200).json({ error: false, users: users }))
+    router.route(usersPath)
+
+        .get((req, res) => {
+
+            Users.getUsersWithRoles(['id', 'username'])
+                .then(users => res.status(200).json({ error: false, users }))
                 .catch(err => fn.catchErr(err, res))
 
+        })
+
+        .post((req, res) => {
+            res.status(501).json({error: true, message: `Not Implemented`})
         });
 
-    router.route(`${ rootPath }/users/:id`)
 
-        .get(fn.requireRole(['admin', 'user']), (req, res) => {
+    router.route(usersIdPath)
 
-            const id = req.params.id || 0;
+        .all((req, res, next) => {
 
-            db('users')
-                .select(['id', 'username', 'role'])
-                .where({ id })
+            return (req.params.id)
+                ? next()
+                : res.status(400).json({error: true, message: `have no user's id`})
+
+        })
+
+        .get((req, res) => {
+
+            const id = req.params.id;
+
+            Users.getUsersWithRoles(['id', 'username'], { id })
                 .then(result => res.status(200).json({ error: false, user: result[0] }))
                 .catch(err => fn.catchErr(err, res))
 
         })
 
-        .put(fn.requireRole('admin'), (req, res) => {
+        .put((req, res) => {
 
             const id = req.params.id;
 
-            if (!id)
-                return res.status(400).json({error: true, message: `have no user's id`});
-
-            const { username, password, role } = req.body;
+            const { username, password, roles } = req.body;
 
             if (password) {
 
@@ -47,7 +61,7 @@ const usersRoutes = (router: Router, rootPath: string) => {
 
                     const data = {
                         username,
-                        role,
+                        roles,
                         hash
                     };
 
@@ -56,15 +70,15 @@ const usersRoutes = (router: Router, rootPath: string) => {
                 })
 
             } else {
-                fn.updateObject('users', id, {username, role}, res)
+                fn.updateObject('users', id, {username, roles}, res)
             }
 
 
         })
 
-        .delete(fn.requireRole('admin'), (req, res) => {
+        .delete((req, res) => {
 
-            const id = req.params.id || 0;
+            const id = req.params.id;
 
             db('users')
                 .delete()

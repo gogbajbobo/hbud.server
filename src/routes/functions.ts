@@ -1,14 +1,20 @@
-import {NextFunction, Request, Response} from "express";
-import db from "../internal/db";
+import {NextFunction, Request, Response} from "express"
+import db from "../internal/db"
 
-function requireRole(role: string | string[]) {
+import logger from '../internal/logger'
+const log = logger(module);
+
+function requireRoles(requiredRoles: string[]) {
 
     return (req: Request, res: Response, next: NextFunction) => {
 
-        req.user
-            ? role.includes(req.user.role)
-                ? next()
-                : res.status(401).send('Unauthorized').end()
+        if (!req.user)
+            return res.status(401).send('Unauthorized').end();
+
+        const checkRole = (role: string): boolean => requiredRoles.includes(role);
+
+        req.user.roles.split(',').some(checkRole)
+            ? next()
             : res.status(403).send('Forbidden').end()
 
     }
@@ -16,7 +22,10 @@ function requireRole(role: string | string[]) {
 }
 
 function catchErr(err: Error, res: Response) {
+
+    log.debug(err.message);
     res.status(500).json({ error: true, message: err.message })
+
 }
 
 function updateObject(table: string, id: number, data: any, res: Response) {
@@ -30,7 +39,7 @@ function updateObject(table: string, id: number, data: any, res: Response) {
 }
 
 export default {
-    requireRole,
+    requireRoles,
     catchErr,
     updateObject
 }

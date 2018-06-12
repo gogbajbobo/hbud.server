@@ -4,16 +4,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = __importDefault(require("../internal/db"));
-function requireRole(role) {
+const logger_1 = __importDefault(require("../internal/logger"));
+const log = logger_1.default(module);
+function requireRoles(requiredRoles) {
     return (req, res, next) => {
-        req.user
-            ? role.includes(req.user.role)
-                ? next()
-                : res.status(401).send('Unauthorized').end()
+        if (!req.user)
+            return res.status(401).send('Unauthorized').end();
+        const checkRole = (role) => requiredRoles.includes(role);
+        req.user.roles.split(',').some(checkRole)
+            ? next()
             : res.status(403).send('Forbidden').end();
     };
 }
 function catchErr(err, res) {
+    log.debug(err.message);
     res.status(500).json({ error: true, message: err.message });
 }
 function updateObject(table, id, data, res) {
@@ -24,7 +28,7 @@ function updateObject(table, id, data, res) {
         .catch(err => catchErr(err, res));
 }
 exports.default = {
-    requireRole,
+    requireRoles,
     catchErr,
     updateObject
 };
