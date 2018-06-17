@@ -40,3 +40,23 @@ const server = app.listen(port, host, () => {
     log.info(`HBUD server listening at http://${ address }:${ port } ${ family }`)
 
 });
+
+const ioServer = new http.Server(app);
+const io = sio(ioServer);
+const ioPort = config.get(`network:${ process.env.appname }:ioPort`);
+
+ioServer.listen(ioPort, host, () => {
+    log.info(`socket.io listening on port ${ ioPort }`)
+});
+
+io.on('connection', socket => {
+
+    log.info(`socket connected`);
+
+    socket.emit('test', { test: 'data'});
+
+    socket.on('test', data => {
+        log.debug(`test data: ${ data }`)
+    })
+
+});
