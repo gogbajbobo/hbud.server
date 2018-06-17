@@ -27,7 +27,7 @@ app.use(passport.initialize());
 
 app.use(router);
 
-const port = config.get(`network:${ process.env.appname }:port`) || 80;
+const port = config.get(`network:${ process.env.appname }:port`);
 const host = config.get(`network:${ process.env.appname }:hostname`);
 
 log.info(`appname: ${ process.env.appname }`);
