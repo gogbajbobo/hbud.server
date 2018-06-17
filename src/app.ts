@@ -1,6 +1,8 @@
 import config from './internal/config'
 
-import express = require('express')
+import express from 'express'
+import http from 'http'
+import sio from 'socket.io'
 import router from './routes'
 import {AddressInfo} from "net";
 
