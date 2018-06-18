@@ -34,7 +34,7 @@ log.info(`host: ${host} / port: ${port}`);
 //
 // });
 const ioServer = new http_1.default.Server(app);
-const io = socket_io_1.default(ioServer);
+const io = socket_io_1.default(ioServer, { transports: ['websocket'] });
 const ioPort = config_1.default.get(`network:${process.env.appname}:ioPort`);
 ioServer.listen(ioPort, host, () => {
     log.info(`socket.io listening on port ${ioPort}`);
