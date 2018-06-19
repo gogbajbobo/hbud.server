@@ -41,16 +41,33 @@ const server = app.listen(port, host, () => {
 
 });
 
-io.on('connection', socket => {
 const io = sio(server);
 
+io.on('connect', socket => {
 
-    log.info(`socket connected`);
+    log.info(`socket connected ${ socket.id }`);
 
-    socket.emit('test', { test: 'data'});
+    const authTimer = setTimeout(() => socket.disconnect(true), 1000);
 
-    socket.on('test', data => {
-        log.debug(`test data: ${ data }`)
+    socket.on('authorize', (data, ack) => {
+
+        if (!data.token) {
+
+            const msg = `no token`;
+            log.info(msg);
+            ack(msg);
+
+            return
+
+        }
+
+        log.debug(`authorize ${ JSON.stringify(data) }`);
+        clearTimeout(authTimer)
+
+    });
+
+    socket.on('disconnect', () => {
+        log.info(`disconnect socket ${ socket.id }`);
     })
 
 });
