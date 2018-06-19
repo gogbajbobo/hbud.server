@@ -34,22 +34,16 @@ log.info(`appname: ${ process.env.appname }`);
 log.info(`NODE_ENV: ${ process.env.NODE_ENV }`);
 log.info(`host: ${ host } / port: ${ port }`);
 
-// const server = app.listen(port, host, () => {
-//
-//     const { address, port, family } = server.address() as AddressInfo;
-//     log.info(`HBUD server listening at http://${ address }:${ port } ${ family }`)
-//
-// });
+const server = app.listen(port, host, () => {
 
-const ioServer = new http.Server(app);
-const io = sio(ioServer);
-const ioPort = config.get(`network:${ process.env.appname }:ioPort`);
+    const { address, port, family } = server.address() as AddressInfo;
+    log.info(`HBUD server listening at http://${ address }:${ port } ${ family }`)
 
-ioServer.listen(ioPort, host, () => {
-    log.info(`socket.io listening on port ${ ioPort }`)
 });
 
 io.on('connection', socket => {
+const io = sio(server);
+
 
     log.info(`socket connected`);
 
