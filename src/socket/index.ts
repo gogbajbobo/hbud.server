@@ -21,15 +21,17 @@ const listener = (socket: Socket): void => {
     log.info(`socket connected ${ socket.id }`);
 
     socket.on('authenticated', () => {
-        log.debug(JSON.parse(redisClient.get(socket.id)).roles);
-        log.info(`socket authenticated ${ socket.id }`)
+
+        const user = JSON.parse(redisClient.get(socket.id));
+        log.info(`socket authenticated ${ socket.id } | ${ user.username }`)
+
     });
 
     socket.on('disconnect', () => {
 
         redisClient.del(socket.id);
         log.info(`disconnect socket ${ socket.id }`);
-        
+
     })
 
 };
