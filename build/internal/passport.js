@@ -10,6 +10,7 @@ const users_1 = __importDefault(require("./db/users"));
 const passport_1 = __importDefault(require("passport"));
 const passport_local_1 = __importDefault(require("passport-local"));
 const passport_jwt_1 = __importDefault(require("passport-jwt"));
+const token_1 = __importDefault(require("./token"));
 const LocalStrategy = passport_local_1.default.Strategy, JwtStrategy = passport_jwt_1.default.Strategy, ExtractJwt = passport_jwt_1.default.ExtractJwt;
 const logger_1 = __importDefault(require("./logger"));
 const log = logger_1.default(module);
@@ -37,12 +38,12 @@ const opts = {
     secretOrKey: config_1.default.get('jwt:secretKey')
 };
 passport_1.default.use(new JwtStrategy(opts, (jwtPayload, done) => {
-    const expirationDate = new Date(jwtPayload.exp * 1000);
-    if (expirationDate < new Date()) {
-        return done(null, false);
-    }
-    findUserByUsername(jwtPayload.username, (err, user) => {
-        return done(null, user ? (user.reauth ? false : user) : false);
+    token_1.default.checkJwtPayload(jwtPayload, err => {
+        if (err)
+            return done(null, false);
+        findUserByUsername(jwtPayload.username, (err, user) => {
+            return done(null, user ? (user.reauth ? false : user) : false);
+        });
     });
 }));
 passport_1.default.serializeUser(serializeUser);
