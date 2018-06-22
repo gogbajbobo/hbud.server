@@ -5,8 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const config_1 = __importDefault(require("./internal/config"));
 const express_1 = __importDefault(require("express"));
-const socket_io_1 = __importDefault(require("socket.io"));
 const routes_1 = __importDefault(require("./routes"));
+const socket_1 = __importDefault(require("./socket"));
 const app = express_1.default();
 app.set('view engine', 'ejs');
 const logger_1 = __importDefault(require("./internal/logger"));
@@ -29,22 +29,5 @@ log.info(`host: ${host} / port: ${port}`);
 const server = app.listen(port, host, () => {
     const { address, port, family } = server.address();
     log.info(`HBUD server listening at http://${address}:${port} ${family}`);
-});
-const io = socket_io_1.default(server);
-io.on('connect', socket => {
-    log.info(`socket connected ${socket.id}`);
-    const authTimer = setTimeout(() => socket.disconnect(true), 1000);
-    socket.on('authorize', (data, ack) => {
-        if (!data.token) {
-            const msg = `no token`;
-            log.info(msg);
-            ack(msg);
-            return;
-        }
-        log.debug(`authorize ${JSON.stringify(data)}`);
-        clearTimeout(authTimer);
-    });
-    socket.on('disconnect', () => {
-        log.info(`disconnect socket ${socket.id}`);
-    });
+    socket_1.default.socketStart(server);
 });
