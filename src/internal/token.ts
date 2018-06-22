@@ -26,4 +26,23 @@ function invokeToken(user: UserModel, message: string): any {
 
 }
 
-export default { invokeToken };
+function extractData(token: string): any {
+    return jwt.decode(token, config.get('jwt:secretKey'))
+}
+
+function checkJwtPayload(jwtPayload: any, callback: (err: Error|null) => void): void {
+
+    if (!jwtPayload) return callback(new Error("Unauthorized"));
+
+    const expirationDate = new Date(jwtPayload.exp * 1000);
+    if (expirationDate < new Date()) return callback(new Error("Token expire"))
+
+    callback(null)
+
+}
+
+export default {
+    invokeToken,
+    extractData,
+    checkJwtPayload
+}
