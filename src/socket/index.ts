@@ -5,6 +5,7 @@ import tokenService from '../internal/token'
 import Users from "../internal/db/users";
 
 const sio_auth = require('socketio-auth');
+const redisClient = require('redis-js');
 const log = logger(module);
 
 function socketStart(server: http.Server) {
@@ -20,6 +21,7 @@ const listener = (socket: Socket): void => {
     log.info(`socket connected ${ socket.id }`);
 
     socket.on('authenticated', () => {
+        log.debug(JSON.parse(redisClient.get(socket.id)).roles);
         log.info(`socket authenticated ${ socket.id }`)
     });
 
@@ -32,13 +34,8 @@ const listener = (socket: Socket): void => {
 const authenticateLog = (err: Error|null, success: boolean, callback: Function) => {
 
     if (!success) {
-        if (err) {
-            log.info(`Authentication error: ${ err.message }`);
-        } else {
-            log.info('Authentication failure');
-        }
+        log.error(err ? `Authentication error: ${ err.message }` : 'Authentication failure')
     }
-
     return callback(err, success)
 
 };
@@ -56,7 +53,16 @@ const authenticate = (socket: Socket, data: any, callback: Function) => {
             .then(users => {
 
                 const user = users[0];
-                Promise.resolve(authenticateLog(null, user ? !user.reauth : false, callback))
+
+                redisClient.set(socket.id, JSON.stringify(user), (err: Error, reply: string) => {
+
+                    if (err || reply !== 'OK') {
+                        return Promise.resolve(authenticateLog(err, false, callback))
+                    }
+
+                    Promise.resolve(authenticateLog(null, user ? !user.reauth : false, callback))
+
+                });
 
             })
             .catch(err => Promise.resolve(authenticateLog(err, false, callback)))
