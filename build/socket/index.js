@@ -8,6 +8,7 @@ const logger_1 = __importDefault(require("../internal/logger"));
 const token_1 = __importDefault(require("../internal/token"));
 const users_1 = __importDefault(require("../internal/db/users"));
 const sio_auth = require('socketio-auth');
+const redisClient = require('redis-js');
 const log = logger_1.default(module);
 function socketStart(server) {
     const io = socket_io_1.default(server);
@@ -17,6 +18,7 @@ function socketStart(server) {
 const listener = (socket) => {
     log.info(`socket connected ${socket.id}`);
     socket.on('authenticated', () => {
+        log.debug(JSON.parse(redisClient.get(socket.id)).roles);
         log.info(`socket authenticated ${socket.id}`);
     });
     socket.on('disconnect', () => {
@@ -25,12 +27,7 @@ const listener = (socket) => {
 };
 const authenticateLog = (err, success, callback) => {
     if (!success) {
-        if (err) {
-            log.info(`Authentication error: ${err.message}`);
-        }
-        else {
-            log.info('Authentication failure');
-        }
+        log.error(err ? `Authentication error: ${err.message}` : 'Authentication failure');
     }
     return callback(err, success);
 };
@@ -43,7 +40,12 @@ const authenticate = (socket, data, callback) => {
         users_1.default.getUsersWithRoles(['*'], { username: jwtPayload.username })
             .then(users => {
             const user = users[0];
-            Promise.resolve(authenticateLog(null, user ? !user.reauth : false, callback));
+            redisClient.set(socket.id, JSON.stringify(user), (err, reply) => {
+                if (err || reply !== 'OK') {
+                    return Promise.resolve(authenticateLog(err, false, callback));
+                }
+                Promise.resolve(authenticateLog(null, user ? !user.reauth : false, callback));
+            });
         })
             .catch(err => Promise.resolve(authenticateLog(err, false, callback)));
     });
