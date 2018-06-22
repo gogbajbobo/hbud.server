@@ -8,6 +8,8 @@ import passport from 'passport'
 import passportLocal from 'passport-local'
 import passportJWT from 'passport-jwt'
 
+import tokenService from './token'
+
 const
     LocalStrategy = passportLocal.Strategy,
     JwtStrategy = passportJWT.Strategy,
@@ -47,15 +49,15 @@ const opts = {
 
 passport.use(new JwtStrategy(opts, (jwtPayload, done) => {
 
-    const expirationDate = new Date(jwtPayload.exp * 1000);
+    tokenService.checkJwtPayload(jwtPayload, err => {
 
-    if (expirationDate < new Date()) {
-        return done(null, false)
-    }
+        if (err) return done(null, false);
 
-    findUserByUsername(jwtPayload.username, (err, user) => {
-        return done(null, user ? (user.reauth ? false : user) : false)
-    })
+        findUserByUsername(jwtPayload.username, (err, user) => {
+            return done(null, user ? (user.reauth ? false : user) : false)
+        })
+
+    });
 
 }));
 
