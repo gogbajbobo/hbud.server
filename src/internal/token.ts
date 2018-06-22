@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken'
 import config from './config'
 import { UserModel } from "./db";
 
-function invokeToken(user: UserModel, message: string): Object {
+function invokeToken(user: UserModel, message: string): any {
 
     const tokenLifetime = 2 * 24 * 60 * 60; // seconds
     const expirationTime = Math.floor(Date.now() / 1000) + tokenLifetime;
