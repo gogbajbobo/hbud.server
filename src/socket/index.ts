@@ -26,7 +26,10 @@ const listener = (socket: Socket): void => {
     });
 
     socket.on('disconnect', () => {
+
+        redisClient.del(socket.id);
         log.info(`disconnect socket ${ socket.id }`);
+        
     })
 
 };
