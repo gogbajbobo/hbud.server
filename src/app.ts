@@ -1,9 +1,8 @@
 import config from './internal/config'
 
 import express from 'express'
-import http from 'http'
-import sio from 'socket.io'
 import router from './routes'
+import socket from './socket'
 import {AddressInfo} from "net";
 
 const app = express();
@@ -37,37 +36,8 @@ log.info(`host: ${ host } / port: ${ port }`);
 const server = app.listen(port, host, () => {
 
     const { address, port, family } = server.address() as AddressInfo;
-    log.info(`HBUD server listening at http://${ address }:${ port } ${ family }`)
+    log.info(`HBUD server listening at http://${ address }:${ port } ${ family }`);
 
-});
-
-const io = sio(server);
-
-io.on('connect', socket => {
-
-    log.info(`socket connected ${ socket.id }`);
-
-    const authTimer = setTimeout(() => socket.disconnect(true), 1000);
-
-    socket.on('authorize', (data, ack) => {
-
-        if (!data.token) {
-
-            const msg = `no token`;
-            log.info(msg);
-            ack(msg);
-
-            return
-
-        }
-
-        log.debug(`authorize ${ JSON.stringify(data) }`);
-        clearTimeout(authTimer)
-
-    });
-
-    socket.on('disconnect', () => {
-        log.info(`disconnect socket ${ socket.id }`);
-    })
+    socket.socketStart(server)
 
 });
