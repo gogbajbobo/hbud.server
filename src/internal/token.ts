@@ -35,7 +35,7 @@ function checkJwtPayload(jwtPayload: any, callback: (err: Error|null) => void): 
     if (!jwtPayload) return callback(new Error("Unauthorized"));
 
     const expirationDate = new Date(jwtPayload.exp * 1000);
-    if (expirationDate < new Date()) return callback(new Error("Token expire"))
+    if (expirationDate < new Date()) return callback(new Error("Token expire"));
 
     callback(null)
 
