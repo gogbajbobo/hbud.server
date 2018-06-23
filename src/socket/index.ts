@@ -2,7 +2,7 @@ import sio, {Socket} from 'socket.io'
 import logger from '../internal/logger'
 import * as http from "http"
 import tokenService from '../internal/token'
-import Users from "../internal/db/users";
+import Users from "../internal/db/users"
 import socketUserCache from '../internal/cache'
 import {UserModel} from "../internal/db";
 
