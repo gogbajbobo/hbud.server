@@ -4,7 +4,7 @@ import * as http from "http"
 import tokenService from '../internal/token'
 import Users from "../internal/db/users"
 import socketUserCache from '../internal/cache'
-import {UserModel} from "../internal/db";
+import {UserModel} from "../internal/db"
 
 const sio_auth = require('socketio-auth');
 const log = logger(module);
