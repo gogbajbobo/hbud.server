@@ -17,35 +17,6 @@ function socketStart(server: http.Server) {
 
 }
 
-const listener = (socket: Socket): void => {
-
-    log.info(`socket connected ${ socket.id }`);
-
-    socket.on('authenticated', () => {
-
-        const user: UserModel = socketUserCache.get(socket.id);
-        log.info(`socket authenticated ${ socket.id } | ${ user.username }`)
-
-    });
-
-    socket.on('disconnect', () => {
-
-        socketUserCache.del(socket.id);
-        log.info(`disconnect socket ${ socket.id }`);
-
-    })
-
-};
-
-const authenticateLog = (err: Error|null, success: boolean, callback: Function) => {
-
-    if (!success) {
-        log.error(err ? `Authentication error: ${ err.message }` : 'Authentication failure')
-    }
-    return callback(err, success)
-
-};
-
 const authenticate = (socket: Socket, data: any, callback: Function) => {
 
     const { token } = data;
@@ -74,6 +45,35 @@ const authenticate = (socket: Socket, data: any, callback: Function) => {
             .catch(err => Promise.resolve(authenticateLog(err, false, callback)))
 
     });
+
+};
+
+const authenticateLog = (err: Error|null, success: boolean, callback: Function) => {
+
+    if (!success) {
+        log.error(err ? `Authentication error: ${ err.message }` : 'Authentication failure')
+    }
+    return callback(err, success)
+
+};
+
+const listener = (socket: Socket): void => {
+
+    log.info(`socket connected ${ socket.id }`);
+
+    socket.on('authenticated', () => {
+
+        const user: UserModel = socketUserCache.get(socket.id);
+        log.info(`socket authenticated ${ socket.id } | ${ user.username }`)
+
+    });
+
+    socket.on('disconnect', () => {
+
+        socketUserCache.del(socket.id);
+        log.info(`disconnect socket ${ socket.id }`);
+
+    })
 
 };
 
