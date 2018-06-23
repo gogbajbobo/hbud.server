@@ -3,7 +3,7 @@ import logger from '../internal/logger'
 import * as http from "http"
 import tokenService from '../internal/token'
 import Users from "../internal/db/users"
-import socketUserCache from '../internal/cache'
+import socketUserCache, {SocketUser} from '../internal/cache'
 import {UserModel} from "../internal/db"
 
 const sio_auth = require('socketio-auth');
@@ -30,16 +30,11 @@ const authenticate = (socket: Socket, data: any, callback: Function) => {
             .then(users => {
 
                 const user = users[0];
+                const userIsGood: boolean = user ? !user.reauth : false;
 
-                socketUserCache.set(socket.id, { user, tokenPayload }, (err: Error, success: boolean) => {
+                userIsGood && socketUserCache.set(socket.id, { user, tokenPayload });
 
-                    if (err || !success) {
-                        return Promise.resolve(authenticateLog(err, false, callback))
-                    }
-
-                    Promise.resolve(authenticateLog(null, user ? !user.reauth : false, callback))
-
-                });
+                Promise.resolve(authenticateLog(null, userIsGood, callback))
 
             })
             .catch(err => Promise.resolve(authenticateLog(err, false, callback)))
@@ -63,7 +58,7 @@ const listener = (socket: Socket): void => {
 
     socket.on('authenticated', () => {
 
-        const user: UserModel = socketUserCache.get(socket.id);
+        const user: UserModel = (socketUserCache.get(socket.id) as SocketUser).user;
         log.info(`socket authenticated ${ socket.id } | ${ user.username }`)
 
     });

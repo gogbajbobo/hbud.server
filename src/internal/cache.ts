@@ -1,27 +1,26 @@
 import NodeCache from 'node-cache'
+import {UserModel} from "./db"
+
+export interface SocketUser {
+    user: UserModel,
+    tokenPayload: any
+}
 
 class SocketUserCache extends NodeCache {
 
     constructor(options?: NodeCache.Options) {
+        super(options)
+    }
 
-        super(options);
+    set(key: string|number, value: SocketUser): boolean {
 
-        const old_set = this.set;
+        console.log(`set ${ JSON.stringify(arguments) }`);
+        return super.set(key, value)
 
-        this.set = function <T>(key: string|number, value: T): boolean {
+    }
 
-            console.log(`set ${ JSON.stringify(arguments) }`);
-            return old_set(key, value)
-
-        };
-
-        this.get = (() => {
-
-            // check if need reauth
-            return this.get
-
-        })();
-
+    get <SocketUser>(key: string|number): SocketUser {
+        return super.get(key)
     }
 
 }
