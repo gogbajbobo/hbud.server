@@ -3,9 +3,10 @@ import logger from '../internal/logger'
 import * as http from "http"
 import tokenService from '../internal/token'
 import Users from "../internal/db/users";
+import socketUserCache from '../internal/cache'
+import {UserModel} from "../internal/db";
 
 const sio_auth = require('socketio-auth');
-const redisClient = require('redis-js');
 const log = logger(module);
 
 function socketStart(server: http.Server) {
@@ -22,14 +23,14 @@ const listener = (socket: Socket): void => {
 
     socket.on('authenticated', () => {
 
-        const user = JSON.parse(redisClient.get(socket.id));
+        const user: UserModel = socketUserCache.get(socket.id);
         log.info(`socket authenticated ${ socket.id } | ${ user.username }`)
 
     });
 
     socket.on('disconnect', () => {
 
-        redisClient.del(socket.id);
+        socketUserCache.del(socket.id);
         log.info(`disconnect socket ${ socket.id }`);
 
     })
@@ -48,20 +49,20 @@ const authenticateLog = (err: Error|null, success: boolean, callback: Function) 
 const authenticate = (socket: Socket, data: any, callback: Function) => {
 
     const { token } = data;
-    const jwtPayload = tokenService.extractData(token);
+    const tokenPayload = tokenService.extractData(token);
 
-    tokenService.checkJwtPayload(jwtPayload, (err: Error) => {
+    tokenService.checkJwtPayload(tokenPayload, (err: Error) => {
 
         if (err) return authenticateLog(err, false, callback);
 
-        Users.getUsersWithRoles(['*'], { username: jwtPayload.username })
+        Users.getUsersWithRoles(['*'], { username: tokenPayload.username })
             .then(users => {
 
                 const user = users[0];
 
-                redisClient.set(socket.id, JSON.stringify(user), (err: Error, reply: string) => {
+                socketUserCache.set(socket.id, { user, tokenPayload }, (err: Error, success: boolean) => {
 
-                    if (err || reply !== 'OK') {
+                    if (err || !success) {
                         return Promise.resolve(authenticateLog(err, false, callback))
                     }
 
