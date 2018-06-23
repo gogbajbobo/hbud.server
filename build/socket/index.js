@@ -24,12 +24,9 @@ const authenticate = (socket, data, callback) => {
         users_1.default.getUsersWithRoles(['*'], { username: tokenPayload.username })
             .then(users => {
             const user = users[0];
-            cache_1.default.set(socket.id, { user, tokenPayload }, (err, success) => {
-                if (err || !success) {
-                    return Promise.resolve(authenticateLog(err, false, callback));
-                }
-                Promise.resolve(authenticateLog(null, user ? !user.reauth : false, callback));
-            });
+            const userIsGood = user ? !user.reauth : false;
+            userIsGood && cache_1.default.set(socket.id, { user, tokenPayload });
+            Promise.resolve(authenticateLog(null, userIsGood, callback));
         })
             .catch(err => Promise.resolve(authenticateLog(err, false, callback)));
     });
@@ -43,7 +40,7 @@ const authenticateLog = (err, success, callback) => {
 const listener = (socket) => {
     log.info(`socket connected ${socket.id}`);
     socket.on('authenticated', () => {
-        const user = cache_1.default.get(socket.id);
+        const user = cache_1.default.get(socket.id).user;
         log.info(`socket authenticated ${socket.id} | ${user.username}`);
     });
     socket.on('disconnect', () => {
