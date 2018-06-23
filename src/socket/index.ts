@@ -44,7 +44,7 @@ const authenticate = (socket: Socket, data: any, callback: Function) => {
             })
             .catch(err => Promise.resolve(authenticateLog(err, false, callback)))
 
-    });
+    })
 
 };
 
@@ -71,7 +71,7 @@ const listener = (socket: Socket): void => {
     socket.on('disconnect', () => {
 
         socketUserCache.del(socket.id);
-        log.info(`disconnect socket ${ socket.id }`);
+        log.info(`disconnect socket ${ socket.id }`)
 
     })
 
