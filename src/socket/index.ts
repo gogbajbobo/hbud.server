@@ -5,6 +5,7 @@ import tokenService from '../internal/token'
 import Users from "../internal/db/users"
 import socketUserCache, {SocketUser} from '../internal/cache'
 import {UserModel} from "../internal/db"
+import isPast from 'date-fns/is_past'
 
 const sio_auth = require('socketio-auth');
 const log = logger(module);
@@ -29,8 +30,9 @@ function authenticate(socket: Socket, data: any, callback: Function) {
         Users.getUsersWithRoles(['*'], { username: tokenPayload.username })
             .then(users => {
 
-                const user = users[0];
-                const userIsGood: boolean = user ? !user.reauth : false;
+                const
+                    user = users[0],
+                    userIsGood: boolean = user ? !user.reauth : false;
 
                 userIsGood && socketUserCache.set(socket.id, { user, tokenPayload });
 
@@ -56,12 +58,7 @@ function listener(socket: Socket): void {
 
     log.info(`socket connected ${ socket.id }`);
 
-    socket.on('authenticated', () => {
-
-        const user: UserModel = (socketUserCache.get(socket.id) as SocketUser).user;
-        log.info(`socket authenticated ${ socket.id } | ${ user.username }`)
-
-    });
+    socket.on('authenticated', () => socketAuthenticated(socket));
 
     socket.on('disconnect', () => {
 
@@ -69,6 +66,54 @@ function listener(socket: Socket): void {
         log.info(`disconnect socket ${ socket.id }`)
 
     })
+
+}
+
+function socketAuthenticated(socket: Socket) {
+
+    const
+        socketUserData: SocketUser = socketUserCache.get(socket.id),
+        user: UserModel = socketUserData.user;
+
+    log.info(`socket authenticated ${ socket.id } | ${ user.username }`);
+
+    socketUseTokenTTLCheck(socket);
+    socketRoutes(socket);
+
+}
+
+function socketUseTokenTTLCheck(socket: Socket) {
+
+    socket.use((packet, next) => {
+
+        if (isTokenExpire(socket.id)) {
+
+            socket.emit('unauthorized', { message: 'token expire' });
+            return socket.disconnect(true)
+
+        }
+
+        next()
+
+    })
+
+}
+
+function isTokenExpire(socketId: string|number): boolean {
+
+    const socketUserData: SocketUser = socketUserCache.get(socketId);
+    return isPast(new Date(socketUserData.tokenPayload.exp * 1000))
+
+}
+
+function socketRoutes(socket: Socket) {
+
+    socket.on('test', (ack: Function) => {
+
+        console.log('test event');
+        ack()
+
+    });
 
 }
 
