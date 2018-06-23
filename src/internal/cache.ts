@@ -1,5 +1,6 @@
 import NodeCache from 'node-cache'
-import {UserModel} from "./db"
+import { UserModel } from "./db"
+import differenceInSeconds from 'date-fns/difference_in_seconds'
 
 export interface SocketUser {
     user: UserModel,
@@ -14,8 +15,9 @@ class SocketUserCache extends NodeCache {
 
     set(key: string|number, value: SocketUser): boolean {
 
-        console.log(`set ${ JSON.stringify(arguments) }`);
-        return super.set(key, value)
+        const tokenExpDate = new Date(value.tokenPayload.exp * 1000);
+        const ttl = differenceInSeconds(tokenExpDate, Date.now());
+        return super.set(key, value, ttl)
 
     }
 
