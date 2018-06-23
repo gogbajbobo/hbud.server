@@ -17,7 +17,7 @@ function socketStart(server: http.Server) {
 
 }
 
-const authenticate = (socket: Socket, data: any, callback: Function) => {
+function authenticate(socket: Socket, data: any, callback: Function) {
 
     const { token } = data;
     const tokenPayload = tokenService.extractData(token);
@@ -41,18 +41,18 @@ const authenticate = (socket: Socket, data: any, callback: Function) => {
 
     })
 
-};
+}
 
-const authenticateLog = (err: Error|null, success: boolean, callback: Function) => {
+function authenticateLog(err: Error|null, success: boolean, callback: Function) {
 
     if (!success) {
         log.error(err ? `Authentication error: ${ err.message }` : 'Authentication failure')
     }
     return callback(err, success)
 
-};
+}
 
-const listener = (socket: Socket): void => {
+function listener(socket: Socket): void {
 
     log.info(`socket connected ${ socket.id }`);
 
@@ -70,6 +70,6 @@ const listener = (socket: Socket): void => {
 
     })
 
-};
+}
 
 export default { socketStart }
