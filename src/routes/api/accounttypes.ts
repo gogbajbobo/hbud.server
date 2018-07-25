@@ -15,9 +15,7 @@ const accountTypesRoutes = (router: Router, rootPath: string) => {
             res.status(501).json({error: true, message: `Not Implemented`})
         })
 
-        .post((req, res) => {
-            res.status(501).json({error: true, message: `Not Implemented`})
-        });
+        .post(fn.notImplemented);
 
     router.route(accountTypesIdPath)
 
@@ -29,17 +27,11 @@ const accountTypesRoutes = (router: Router, rootPath: string) => {
 
         })
 
-        .get((req, res) => {
-            res.status(501).json({error: true, message: `Not Implemented`})
-        })
+        .get(fn.notImplemented)
 
-        .put((req, res) => {
-            res.status(501).json({error: true, message: `Not Implemented`})
-        })
+        .put(fn.notImplemented)
 
-        .delete((req, res) => {
-            res.status(501).json({error: true, message: `Not Implemented`})
-        })
+        .delete(fn.notImplemented)
 
 };
 

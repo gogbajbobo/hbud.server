@@ -28,6 +28,10 @@ function catchErr(err: Error, res: Response) {
 
 }
 
+function notImplemented(req: Request, res: Response) {
+    res.status(501).json({error: true, message: `Not Implemented`})
+}
+
 function updateObject(table: string, id: number, data: any, res: Response) {
 
     db(table)
@@ -41,5 +45,6 @@ function updateObject(table: string, id: number, data: any, res: Response) {
 export default {
     requireRoles,
     catchErr,
+    notImplemented,
     updateObject
 }
