@@ -1,6 +1,9 @@
 import NodeCache from 'node-cache'
 import { UserModel } from "./db"
+import logger from '../internal/logger'
 import differenceInSeconds from 'date-fns/difference_in_seconds'
+
+const log = logger(module);
 
 export interface SocketUser {
     user: UserModel,
@@ -13,14 +16,6 @@ class SocketUserCache extends NodeCache {
         super(options)
     }
 
-    set(key: string|number, value: SocketUser): boolean {
-
-        const tokenExpDate = new Date(value.tokenPayload.exp * 1000);
-        const ttl = differenceInSeconds(tokenExpDate, Date.now());
-        return super.set(key, value, ttl)
-
-    }
-
     get <SocketUser>(key: string|number): SocketUser {
         return super.get(key)
     }
@@ -29,5 +24,18 @@ class SocketUserCache extends NodeCache {
 
 const socketUserCache = new SocketUserCache({ useClones: false });
 
-export default socketUserCache;
+socketUserCache.on( "set", (key, value) => {
+
+    const tokenExpDate = new Date(value.tokenPayload.exp * 1000);
+    const ttl = differenceInSeconds(tokenExpDate, Date.now());
+
+    socketUserCache.ttl(key, ttl);
+
+});
+
+socketUserCache.on( "expired", (key, value) => {
+    log.debug(`${ key } expired`)
+});
+
+export default socketUserCache
 
