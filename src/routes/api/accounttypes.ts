@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import fn from '../functions'
+import AccountTypes from '../../internal/db/accountTypes'
 
 const accountTypesRoutes = (router: Router, rootPath: string) => {
 
@@ -12,7 +13,11 @@ const accountTypesRoutes = (router: Router, rootPath: string) => {
     router.route(accountTypesPath)
 
         .get((req, res) => {
-            res.status(501).json({error: true, message: `Not Implemented`})
+
+            AccountTypes.getAccountTypes()
+                .then(accountTypes => res.status(200).json({ error: false, accountTypes }))
+                .catch(err => fn.catchErr(err, res))
+
         })
 
         .post(fn.notImplemented);
