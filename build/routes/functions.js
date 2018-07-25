@@ -20,6 +20,9 @@ function catchErr(err, res) {
     log.debug(err.message);
     res.status(500).json({ error: true, message: err.message });
 }
+function notImplemented(req, res) {
+    res.status(501).json({ error: true, message: `Not Implemented` });
+}
 function updateObject(table, id, data, res) {
     db_1.default(table)
         .update(data)
@@ -30,5 +33,6 @@ function updateObject(table, id, data, res) {
 exports.default = {
     requireRoles,
     catchErr,
+    notImplemented,
     updateObject
 };
