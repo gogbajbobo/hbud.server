@@ -1,6 +1,5 @@
 import { Router } from 'express'
 
-import db from '../../internal/db'
 import fn from '../functions'
 import Roles from "../../internal/db/roles";
 
