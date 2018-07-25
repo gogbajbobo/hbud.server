@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = __importDefault(require("./config"));
 function invokeToken(user, message) {
-    const tokenLifetime = 2 * 24 * 60 * 60; // seconds
+    const tokenLifetime = 60 * 60 * 24 * 2; // seconds
     const expirationTime = Math.floor(Date.now() / 1000) + tokenLifetime;
     const userData = {
         id: user.id,
