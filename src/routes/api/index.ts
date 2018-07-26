@@ -5,6 +5,7 @@ import passport from "../../internal/passport"
 import usersRoutes from './users'
 import rolesRoutes from './roles'
 import accountTypesRoutes from './accounttypes'
+import accountsRoutes from "./accounts";
 
 const apiPath = '/api';
 
@@ -15,7 +16,8 @@ const apiRoutes = (router: Router) => {
 
     usersRoutes(router, apiPath);
     rolesRoutes(router, apiPath);
-    accountTypesRoutes(router, apiPath)
+    accountTypesRoutes(router, apiPath);
+    accountsRoutes(router, apiPath)
 
 };
 
