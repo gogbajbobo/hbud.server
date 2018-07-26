@@ -8,7 +8,7 @@ const accountTypesRoutes = (router: Router, rootPath: string) => {
     const accountTypesIdPath = `${ rootPath }/accounttypes/:id`;
 
     router.route([accountTypesPath, accountTypesIdPath])
-        .all(fn.requireRoles(['admin']), (req, res, next) => next());
+        .all(fn.requireRoles(['admin', 'user']), (req, res, next) => next());
 
     router.route(accountTypesPath)
 
