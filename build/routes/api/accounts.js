@@ -16,7 +16,14 @@ const accountsRoutes = (router, rootPath) => {
             .then(accounts => res.status(200).json({ error: false, accounts }))
             .catch(err => functions_1.default.catchErr(err, res));
     })
-        .post(functions_1.default.notImplemented);
+        .post((req, res) => {
+        const { name, typeId } = req.body;
+        if (!name || !typeId)
+            return res.status(400).json({ error: true, code: 400, message: 'Bad Request' });
+        accounts_1.default.addAccount(name, typeId, req.user.id)
+            .then(account => res.status(200).json({ error: false, account }))
+            .catch(err => functions_1.default.catchErr(err, res));
+    });
     router.route(accountsIdPath)
         .all((req, res, next) => {
         return (req.params.id)
