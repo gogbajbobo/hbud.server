@@ -20,7 +20,18 @@ const accountsRoutes = (router: Router, rootPath: string) => {
 
         })
 
-        .post(fn.notImplemented);
+        .post((req, res) => {
+
+            const {name, typeId} = req.body;
+
+            if (!name || !typeId )
+                return res.status(400).json({error: true, code: 400, message: 'Bad Request'});
+
+            Accounts.addAccount(name, typeId, req.user.id)
+                .then(account => res.status(200).json({ error: false, account }))
+                .catch(err => fn.catchErr(err, res))
+
+        });
 
     router.route(accountsIdPath)
 
