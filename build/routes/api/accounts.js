@@ -17,10 +17,10 @@ const accountsRoutes = (router, rootPath) => {
             .catch(err => functions_1.default.catchErr(err, res));
     })
         .post((req, res) => {
-        const { name, typeId } = req.body;
-        if (!name || !typeId)
+        const { name, type_id } = req.body;
+        if (!name || !type_id)
             return res.status(400).json({ error: true, code: 400, message: 'Bad Request' });
-        accounts_1.default.addAccount(name, typeId, req.user.id)
+        accounts_1.default.addAccount(name, type_id, req.user.id)
             .then(account => res.status(200).json({ error: false, account }))
             .catch(err => functions_1.default.catchErr(err, res));
     });
@@ -31,7 +31,13 @@ const accountsRoutes = (router, rootPath) => {
             : res.status(400).json({ error: true, message: `have no id` });
     })
         .get(functions_1.default.notImplemented)
-        .put(functions_1.default.notImplemented)
+        .put((req, res) => {
+        const id = req.params.id;
+        const { name, type_id } = req.body;
+        accounts_1.default.updateAccount(id, req.user.id, name, type_id)
+            .then(() => res.status(200).json({ error: false }))
+            .catch(err => functions_1.default.catchErr(err, res));
+    })
         .delete((req, res) => {
         const id = req.params.id;
         if (!id)

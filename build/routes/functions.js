@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const db_1 = __importDefault(require("../internal/db"));
+const db_1 = require("../internal/db");
 const logger_1 = __importDefault(require("../internal/logger"));
 const log = logger_1.default(module);
 function requireRoles(requiredRoles) {
@@ -24,9 +24,7 @@ function notImplemented(req, res) {
     res.status(501).json({ error: true, message: `Not Implemented` });
 }
 function updateObject(table, id, data, res) {
-    db_1.default(table)
-        .update(data)
-        .where({ id })
+    db_1.updateDBObject(table, id, data)
         .then(() => res.status(200).json({ error: false }))
         .catch(err => catchErr(err, res));
 }

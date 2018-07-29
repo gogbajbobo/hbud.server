@@ -4,17 +4,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const _1 = __importDefault(require("./"));
+const subaccountsTable = 'subaccounts';
 class Subaccounts {
-    static getSubaccounts(userId) {
-        return _1.default('subaccounts').select().where({ user_id: userId });
+    static getSubaccounts(user_id) {
+        return _1.default(subaccountsTable).select().where({ user_id });
     }
-    static addSubccount(name, accountId, userId) {
-        const data = {
-            name,
-            account_id: accountId,
-            user_id: userId
-        };
-        return _1.default('subaccounts').insert(data);
+    static addSubccount(name, account_id, user_id) {
+        return _1.default(subaccountsTable).insert({ name, account_id, user_id });
     }
 }
 exports.default = Subaccounts;

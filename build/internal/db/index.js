@@ -6,8 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const config_1 = __importDefault(require("../config"));
 const knex_1 = __importDefault(require("knex"));
 const logger_1 = __importDefault(require("../logger"));
-const log = logger_1.default(module);
-const mysqlConfig = config_1.default.get('mysql');
+const log = logger_1.default(module), mysqlConfig = config_1.default.get('mysql');
 log.debug(mysqlConfig);
 const db = knex_1.default({
     client: 'mysql',
@@ -15,3 +14,7 @@ const db = knex_1.default({
     debug: false
 });
 exports.default = db;
+function updateDBObject(table, id, data) {
+    return db(table).update(data).where({ id });
+}
+exports.updateDBObject = updateDBObject;
