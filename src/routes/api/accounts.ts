@@ -47,7 +47,18 @@ const accountsRoutes = (router: Router, rootPath: string) => {
 
         .put(fn.notImplemented)
 
-        .delete(fn.notImplemented)
+        .delete((req, res) => {
+
+            const id = req.params.id;
+
+            if (!id)
+                return res.status(400).json({error: true, code: 400, message: 'Bad Request'});
+
+            Accounts.deleteAccount(id)
+                .then(() => res.status(200).json({ error: false }))
+                .catch(err => fn.catchErr(err, res))
+
+        })
 
 };
 

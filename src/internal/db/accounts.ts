@@ -12,6 +12,8 @@ class Accounts {
         return db(accountsTable).insert({ name, type_id, user_id })
     }
 
+    static deleteAccount(id: number) {
+        return db(accountsTable).delete().where({ id })
     }
 
 }
