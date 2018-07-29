@@ -8,7 +8,7 @@ class Accounts {
         return db(accountsTable).select().where({ user_id })
     }
 
-    static addAccount(name: string, type_id: number, user_id: number) {
+    static addAccount(user_id: number, name: string, type_id: number) {
         return db(accountsTable).insert({ name, type_id, user_id })
     }
 

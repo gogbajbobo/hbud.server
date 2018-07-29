@@ -2,9 +2,10 @@ import config from '../config'
 import knex from 'knex'
 
 import logger from '../logger'
-const log = logger(module);
 
-const mysqlConfig = config.get('mysql');
+const
+    log = logger(module),
+    mysqlConfig = config.get('mysql');
 
 log.debug(mysqlConfig);
 

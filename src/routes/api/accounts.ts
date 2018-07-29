@@ -22,12 +22,12 @@ const accountsRoutes = (router: Router, rootPath: string) => {
 
         .post((req, res) => {
 
-            const {name, typeId} = req.body;
+            const {name, type_id} = req.body;
 
-            if (!name || !typeId )
+            if (!name || !type_id )
                 return res.status(400).json({error: true, code: 400, message: 'Bad Request'});
 
-            Accounts.addAccount(name, typeId, req.user.id)
+            Accounts.addAccount(name, type_id, req.user.id)
                 .then(account => res.status(200).json({ error: false, account }))
                 .catch(err => fn.catchErr(err, res))
 

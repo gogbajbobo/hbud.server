@@ -1,21 +1,15 @@
 import db from './'
 
+const subaccountsTable = 'subaccounts';
+
 class Subaccounts {
 
-    static getSubaccounts(userId: number) {
-        return db('subaccounts').select().where({ user_id: userId })
+    static getSubaccounts(user_id: number) {
+        return db(subaccountsTable).select().where({ user_id })
     }
 
-    static addSubccount(name: string, accountId: number, userId: number) {
-
-        const data = {
-            name,
-            account_id: accountId,
-            user_id: userId
-        };
-
-        return db('subaccounts').insert(data)
-
+    static addSubccount(name: string, account_id: number, user_id: number) {
+        return db(subaccountsTable).insert({ name, account_id, user_id })
     }
 
 }
