@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from "express"
-import db from "../internal/db"
+import { updateDBObject } from "../internal/db"
 
 import logger from '../internal/logger'
 const log = logger(module);
@@ -34,9 +34,7 @@ function notImplemented(req: Request, res: Response) {
 
 function updateObject(table: string, id: number, data: any, res: Response) {
 
-    db(table)
-        .update(data)
-        .where({ id })
+    updateDBObject(table, id, data)
         .then(() => res.status(200).json({ error: false }))
         .catch(err => catchErr(err, res))
 

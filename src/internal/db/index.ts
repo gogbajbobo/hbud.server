@@ -17,6 +17,10 @@ const db = knex({
 
 export default db
 
+export function updateDBObject(table: string, id: number, data: any) {
+    return db(table).update(data).where({ id })
+}
+
 export interface UserModel {
     id: number,
     username: string,
