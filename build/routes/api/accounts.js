@@ -32,6 +32,13 @@ const accountsRoutes = (router, rootPath) => {
     })
         .get(functions_1.default.notImplemented)
         .put(functions_1.default.notImplemented)
-        .delete(functions_1.default.notImplemented);
+        .delete((req, res) => {
+        const id = req.params.id;
+        if (!id)
+            return res.status(400).json({ error: true, code: 400, message: 'Bad Request' });
+        accounts_1.default.deleteAccount(id)
+            .then(() => res.status(200).json({ error: false }))
+            .catch(err => functions_1.default.catchErr(err, res));
+    });
 };
 exports.default = accountsRoutes;
