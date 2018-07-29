@@ -16,6 +16,10 @@ class Accounts {
         return db(accountsTable).delete().where({ id })
     }
 
+    static updateAccount(id: number, user_id: number, name: string, type_id: number) {
+        return db(accountsTable).update({ name, type_id }).where({ id, user_id })
+    }
+
 }
 
 export default Accounts

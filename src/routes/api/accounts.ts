@@ -45,7 +45,18 @@ const accountsRoutes = (router: Router, rootPath: string) => {
 
         .get(fn.notImplemented)
 
-        .put(fn.notImplemented)
+        .put((req, res) => {
+
+            const id = req.params.id;
+
+            const { name, type_id } = req.body;
+
+            Accounts.updateAccount(id, req.user.id, name, type_id)
+                .then(() => res.status(200).json({ error: false }))
+                .catch(err => fn.catchErr(err, res))
+
+
+        })
 
         .delete((req, res) => {
 
