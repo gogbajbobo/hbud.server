@@ -45,9 +45,31 @@ const subaccountsRoutes = (router: Router, rootPath: string) => {
 
         .get(fn.notImplemented)
 
-        .put(fn.notImplemented)
+        .put((req, res) => {
 
-        .delete(fn.notImplemented)
+            const id = req.params.id;
+
+            const { name, account_id } = req.body;
+
+            Subaccounts.updateSubaccount(id, req.user.id, name, account_id)
+                .then(() => res.status(200).json({ error: false }))
+                .catch(err => fn.catchErr(err, res))
+
+
+        })
+
+        .delete((req, res) => {
+
+            const id = req.params.id;
+
+            if (!id)
+                return res.status(400).json({error: true, code: 400, message: 'Bad Request'});
+
+            Subaccounts.deleteSubaccount(id)
+                .then(() => res.status(200).json({ error: false }))
+                .catch(err => fn.catchErr(err, res))
+
+        })
 
 };
 
