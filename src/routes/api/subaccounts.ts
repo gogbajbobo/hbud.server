@@ -27,7 +27,7 @@ const subaccountsRoutes = (router: Router, rootPath: string) => {
             if (!name || !accountId )
                 return res.status(400).json({error: true, code: 400, message: 'Bad Request'});
 
-            Subaccounts.addSubccount(name, accountId, req.user.id)
+            Subaccounts.addSubccount(req.user.id, name, accountId)
                 .then(subaccounts => res.status(200).json({ error: false, subaccounts }))
                 .catch(err => fn.catchErr(err, res))
 
