@@ -20,7 +20,7 @@ const subaccountsRoutes = (router, rootPath) => {
         const { name, accountId } = req.body;
         if (!name || !accountId)
             return res.status(400).json({ error: true, code: 400, message: 'Bad Request' });
-        subaccounts_1.default.addSubccount(name, accountId, req.user.id)
+        subaccounts_1.default.addSubccount(req.user.id, name, accountId)
             .then(subaccounts => res.status(200).json({ error: false, subaccounts }))
             .catch(err => functions_1.default.catchErr(err, res));
     });
@@ -31,7 +31,20 @@ const subaccountsRoutes = (router, rootPath) => {
             : res.status(400).json({ error: true, message: `have no id` });
     })
         .get(functions_1.default.notImplemented)
-        .put(functions_1.default.notImplemented)
-        .delete(functions_1.default.notImplemented);
+        .put((req, res) => {
+        const id = req.params.id;
+        const { name, account_id } = req.body;
+        subaccounts_1.default.updateSubaccount(id, req.user.id, name, account_id)
+            .then(() => res.status(200).json({ error: false }))
+            .catch(err => functions_1.default.catchErr(err, res));
+    })
+        .delete((req, res) => {
+        const id = req.params.id;
+        if (!id)
+            return res.status(400).json({ error: true, code: 400, message: 'Bad Request' });
+        subaccounts_1.default.deleteSubaccount(id)
+            .then(() => res.status(200).json({ error: false }))
+            .catch(err => functions_1.default.catchErr(err, res));
+    });
 };
 exports.default = subaccountsRoutes;
